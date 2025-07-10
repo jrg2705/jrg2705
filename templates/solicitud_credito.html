@@ -1,0 +1,258 @@
+{% extends "base.html" %}
+
+{% block title %}Solicitud de Crédito{% endblock %}
+
+{% block content_header %}
+    <div class="breadcrumbs-container">
+        <a href="{{ url_for('inicio') }}">Inicio</a> &raquo; Solicitud de Crédito
+    </div>
+    <h2>Formulario de Solicitud de Crédito</h2>
+{% endblock %}
+
+{% block content %}
+<section class="solicitud-credito-form-section">
+    <p>Por favor, complete el siguiente formulario para solicitar su crédito. Nos pondremos en contacto con usted a la brevedad.</p>
+
+    <form method="POST" action="{{ url_for('solicitud_credito') }}" novalidate>
+        {{ form.hidden_tag() }} {# CSRF Token #}
+
+        <fieldset>
+            <legend>Datos Personales</legend>
+            <div class="form-group">
+                {{ form.nombres.label(class="form-label") }}
+                {{ form.nombres(class="form-control" + (" is-invalid" if form.nombres.errors else "")) }}
+                {% if form.nombres.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.nombres.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.apellidos.label(class="form-label") }}
+                {{ form.apellidos(class="form-control" + (" is-invalid" if form.apellidos.errors else "")) }}
+                {% if form.apellidos.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.apellidos.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.tipo_id.label(class="form-label") }}
+                {{ form.tipo_id(class="form-control custom-select" + (" is-invalid" if form.tipo_id.errors else "")) }}
+                {% if form.tipo_id.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.tipo_id.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.numero_id.label(class="form-label") }}
+                {{ form.numero_id(class="form-control" + (" is-invalid" if form.numero_id.errors else "")) }}
+                {% if form.numero_id.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.numero_id.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Información de Contacto</legend>
+            <div class="form-group">
+                {{ form.direccion.label(class="form-label") }}
+                {{ form.direccion(class="form-control" + (" is-invalid" if form.direccion.errors else ""), rows=3) }}
+                {% if form.direccion.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.direccion.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.telefono_movil.label(class="form-label") }}
+                {{ form.telefono_movil(class="form-control" + (" is-invalid" if form.telefono_movil.errors else ""), placeholder="+1234567890") }}
+                {% if form.telefono_movil.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.telefono_movil.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group form-check">
+                {{ form.tiene_whatsapp(class="form-check-input") }}
+                {{ form.tiene_whatsapp.label(class="form-check-label") }}
+            </div>
+            <div class="form-group" id="whatsapp_otro_group" style="display:none;">
+                {{ form.whatsapp_otro.label(class="form-label") }}
+                {{ form.whatsapp_otro(class="form-control" + (" is-invalid" if form.whatsapp_otro.errors else ""), placeholder="+1234567890") }}
+                {% if form.whatsapp_otro.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.whatsapp_otro.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else "")) }}
+                {% if form.email.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Información Financiera y de Interés</legend>
+            <div class="form-group">
+                {{ form.ingresos_mensuales.label(class="form-label") }}
+                {{ form.ingresos_mensuales(class="form-control custom-select" + (" is-invalid" if form.ingresos_mensuales.errors else "")) }}
+                {% if form.ingresos_mensuales.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.ingresos_mensuales.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.producto_interes.label(class="form-label") }}
+                {{ form.producto_interes(class="form-control" + (" is-invalid" if form.producto_interes.errors else "")) }}
+                {% if form.producto_interes.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.producto_interes.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Referencias Personales</legend>
+            <p>Por favor, proporcione al menos dos referencias personales.</p>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.ref1_nombre.label(class="form-label") }}
+                    {{ form.ref1_nombre(class="form-control" + (" is-invalid" if form.ref1_nombre.errors else "")) }}
+                    {% if form.ref1_nombre.errors %}<div class="invalid-feedback">{% for e in form.ref1_nombre.errors %}{{e}}{% endfor %}</div>{% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.ref1_telefono.label(class="form-label") }}
+                    {{ form.ref1_telefono(class="form-control" + (" is-invalid" if form.ref1_telefono.errors else ""), placeholder="+1234567890") }}
+                    {% if form.ref1_telefono.errors %}<div class="invalid-feedback">{% for e in form.ref1_telefono.errors %}{{e}}{% endfor %}</div>{% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.ref2_nombre.label(class="form-label") }}
+                    {{ form.ref2_nombre(class="form-control" + (" is-invalid" if form.ref2_nombre.errors else "")) }}
+                    {% if form.ref2_nombre.errors %}<div class="invalid-feedback">{% for e in form.ref2_nombre.errors %}{{e}}{% endfor %}</div>{% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.ref2_telefono.label(class="form-label") }}
+                    {{ form.ref2_telefono(class="form-control" + (" is-invalid" if form.ref2_telefono.errors else ""), placeholder="+1234567890") }}
+                    {% if form.ref2_telefono.errors %}<div class="invalid-feedback">{% for e in form.ref2_telefono.errors %}{{e}}{% endfor %}</div>{% endif %}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.ref3_nombre.label(class="form-label") }} (Opcional)
+                    {{ form.ref3_nombre(class="form-control" + (" is-invalid" if form.ref3_nombre.errors else "")) }}
+                    {% if form.ref3_nombre.errors %}<div class="invalid-feedback">{% for e in form.ref3_nombre.errors %}{{e}}{% endfor %}</div>{% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.ref3_telefono.label(class="form-label") }} (Opcional)
+                    {{ form.ref3_telefono(class="form-control" + (" is-invalid" if form.ref3_telefono.errors else ""), placeholder="+1234567890") }}
+                    {% if form.ref3_telefono.errors %}<div class="invalid-feedback">{% for e in form.ref3_telefono.errors %}{{e}}{% endfor %}</div>{% endif %}
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Preferencia de Contacto y Términos</legend>
+            <div class="form-group">
+                {{ form.horario_contacto.label(class="form-label") }}
+                {{ form.horario_contacto(class="form-control custom-select" + (" is-invalid" if form.horario_contacto.errors else "")) }}
+                {% if form.horario_contacto.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.horario_contacto.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group terms-conditions-box">
+                <h4>Términos y Condiciones para la Solicitud de Crédito</h4>
+                <div class="terms-text-container">
+                    <p>Al enviar esta solicitud, usted declara que toda la información proporcionada es veraz y completa. Autoriza a Electro Hogar y/o sus entidades financieras afiliadas a verificar toda la información suministrada, incluyendo historial crediticio en las centrales de riesgo y referencias personales/comerciales.</p>
+                    <p>Entiende que la aprobación del crédito está sujeta a las políticas de crédito vigentes de Electro Hogar y/o sus entidades financieras afiliadas, y que el envío de esta solicitud no garantiza la aprobación del mismo.</p>
+                    <p>En caso de ser aprobado, se le informarán las condiciones específicas del crédito, incluyendo tasa de interés, plazo, cuotas, y cualquier otro cargo aplicable, las cuales deberá aceptar explícitamente para formalizar el crédito.</p>
+                    <p>Electro Hogar se compromete a proteger sus datos personales de acuerdo con nuestra Política de Privacidad y las leyes aplicables. Su información será utilizada exclusivamente para el proceso de evaluación y gestión de su solicitud de crédito.</p>
+                    <p>Usted tiene derecho a acceder, rectificar y cancelar sus datos personales, así como a oponerse a su tratamiento o revocar el consentimiento que para tal fin nos haya otorgado, a través de los procedimientos que hemos implementado. Para conocer dichos procedimientos, los requisitos y plazos, se puede poner en contacto con nuestro departamento de atención al cliente.</p>
+                    <p><strong>Política de Comisiones y Cargos:</strong> Antes de la formalización del crédito, se le informará detalladamente sobre cualquier comisión por estudio de crédito, seguros obligatorios, cargos por mora, o cualquier otro costo asociado al crédito. Es su responsabilidad revisar y entender estos cargos.</p>
+                    <p><strong>Incumplimiento:</strong> El incumplimiento de las obligaciones de pago generará los intereses moratorios correspondientes y podría resultar en reportes negativos a las centrales de riesgo, afectando su historial crediticio, además de las acciones de cobro legal pertinentes.</p>
+                    <p>Al marcar la casilla "Acepto los Términos y Condiciones...", usted confirma que ha leído, entendido y aceptado todos los puntos anteriores.</p>
+                </div>
+            </div>
+
+            <div class="form-group form-check">
+                {{ form.acepta_terminos(class="form-check-input" + (" is-invalid" if form.acepta_terminos.errors else "")) }}
+                <label for="{{ form.acepta_terminos.id }}" class="form-check-label">
+                    Acepto los <a href="#" id="open-terms-modal-link">Términos y Condiciones y la Política de Privacidad</a>.
+                </label>
+                {% if form.acepta_terminos.errors %}
+                    <div class="invalid-feedback d-block"> {# d-block para que se muestre bien el error del checkbox #}
+                        {% for error in form.acepta_terminos.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </fieldset>
+
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary btn-lg") }}
+        </div>
+    </form>
+</section>
+
+<!-- Modal para Términos y Condiciones -->
+<div id="terms-conditions-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content-terms">
+        <span class="modal-close-terms" id="close-terms-modal-button">&times;</span>
+        <h4>Términos y Condiciones para la Solicitud de Crédito</h4>
+        <div class="terms-text-container-modal">
+            <p>Al enviar esta solicitud, usted declara que toda la información proporcionada es veraz y completa. Autoriza a Electro Hogar y/o sus entidades financieras afiliadas a verificar toda la información suministrada, incluyendo historial crediticio en las centrales de riesgo y referencias personales/comerciales.</p>
+            <p>Entiende que la aprobación del crédito está sujeta a las políticas de crédito vigentes de Electro Hogar y/o sus entidades financieras afiliadas, y que el envío de esta solicitud no garantiza la aprobación del mismo.</p>
+            <p>En caso de ser aprobado, se le informarán las condiciones específicas del crédito, incluyendo tasa de interés, plazo, cuotas, y cualquier otro cargo aplicable, las cuales deberá aceptar explícitamente para formalizar el crédito.</p>
+            <p>Electro Hogar se compromete a proteger sus datos personales de acuerdo con nuestra Política de Privacidad y las leyes aplicables. Su información será utilizada exclusivamente para el proceso de evaluación y gestión de su solicitud de crédito.</p>
+            <p>Usted tiene derecho a acceder, rectificar y cancelar sus datos personales, así como a oponerse a su tratamiento o revocar el consentimiento que para tal fin nos haya otorgado, a través de los procedimientos que hemos implementado. Para conocer dichos procedimientos, los requisitos y plazos, se puede poner en contacto con nuestro departamento de atención al cliente.</p>
+            <p><strong>Política de Comisiones y Cargos:</strong> Antes de la formalización del crédito, se le informará detalladamente sobre cualquier comisión por estudio de crédito, seguros obligatorios, cargos por mora, o cualquier otro costo asociado al crédito. Es su responsabilidad revisar y entender estos cargos.</p>
+            <p><strong>Incumplimiento:</strong> El incumplimiento de las obligaciones de pago generará los intereses moratorios correspondientes y podría resultar en reportes negativos a las centrales de riesgo, afectando su historial crediticio, además de las acciones de cobro legal pertinentes.</p>
+            <p>Al marcar la casilla "Acepto los Términos y Condiciones...", usted confirma que ha leído, entendido y aceptado todos los puntos anteriores.</p>
+        </div>
+        <button type="button" id="accept-terms-from-modal" class="btn btn-primary">Entendido y Aceptar</button>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tieneWhatsappCheckbox = document.getElementById('{{ form.tiene_whatsapp.id }}');
+    const whatsappOtroGroup = document.getElementById('whatsapp_otro_group');
+    const whatsappOtroInput = document.getElementById('{{ form.whatsapp_otro.id }}');
+
+    function toggleWhatsappOtro() {
+        if (tieneWhatsappCheckbox.checked) {
+            whatsappOtroGroup.style.display = 'none';
+            whatsappOtroInput.value = ''; // Limpiar el campo si se oculta
+        } else {
+            whatsappOtroGroup.style.display = 'block';
+        }
+    }
+    // Estado inicial
+    toggleWhatsappOtro();
+    // Event listener
+    tieneWhatsappCheckbox.addEventListener('change', toggleWhatsappOtro);
+});
+</script>
+
+{% endblock %}
+
+{% block categorias_sidebar %}
+    {# Opcional: Podríamos querer ocultar el sidebar de categorías en esta página #}
+    {# Para mantenerlo: dejar este bloque vacío o llamar a super() si base.html lo tuviera #}
+    {# Para ocultarlo: simplemente no incluir nada aquí #}
+{% endblock %}

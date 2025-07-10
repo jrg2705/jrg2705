@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Electro Hogar{% endblock %} - Tienda de Electrodomésticos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <button type="button" id="btn-toggle-categorias" class="btn-hamburguesa" aria-label="Toggle categorias navigation" aria-expanded="false" aria-controls="categorias-sidebar-nav">
+                &#9776; {# Símbolo de hamburguesa HTML #}
+            </button>
+            <h1>
+                <a href="{{ url_for('inicio') }}">
+                    <img src="{{ url_for('static', filename='img/logo_placeholder.png') }}" alt="Logo Electro Hogar" class="header-logo">
+                    Electro Hogar
+                </a>
+            </h1>
+            <nav class="main-nav" id="main-navigation"> {# Añadido ID aquí #}
+                <ul>
+                    <li><a href="{{ url_for('inicio') }}">Inicio</a></li>
+                    <li><a href="{{ url_for('mostrar_sucursales') }}">Sucursales</a></li>
+                    <li><a href="{{ url_for('catalogo_general') }}">Catálogo</a></li>
+                    <li><a href="{{ url_for('solicitud_credito') }}">Solicitar Crédito</a></li>
+                    <!-- Aquí podrían ir más enlaces principales si se desea -->
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container-principal">
+        {% block categorias_sidebar %}
+            {% include '_categorias_nav.html' %}
+        {% endblock %}
+        <main class="content-area">
+            {% block content_header %}
+                {# Espacio para breadcrumbs o títulos específicos de la página de contenido #}
+            {% endblock %}
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+    <footer>
+        <p>&copy; {{ current_year }} Electro Hogar - Todos los derechos reservados.</p>
+    </footer>
+    <div class="main-content-overlay"></div> {# Para el cierre del menú móvil #}
+
+    <!-- Modal para Imagen Ampliada -->
+    <div id="image-modal" class="image-modal-overlay">
+        <span class="image-modal-close" title="Cerrar">&times;</span>
+        <img class="image-modal-content" id="modal-image-src" src="#" alt="Imagen Ampliada">
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</body>
+</html>

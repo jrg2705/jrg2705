@@ -1,0 +1,25 @@
+<aside class="categorias-sidebar" id="categorias-sidebar-nav">
+    <h3>Categorías</h3>
+    <ul class="lista-categorias-principales">
+        {% for cat_p in categorias_nav %}
+        <li>
+            <a href="{{ url_for('catalogo_por_categoria_principal', cat_principal_slug=cat_p.slug_cat_principal) }}"
+               class="cat-principal-link">{{ cat_p.nombre_cat_principal }}</a>
+            {% if cat_p.subcategorias %}
+            <ul class="lista-subcategorias">
+                {% for sub_cat in cat_p.subcategorias %}
+                <li>
+                    <a href="{{ url_for('catalogo_por_subcategoria', cat_principal_slug=cat_p.slug_cat_principal, sub_cat_slug=sub_cat.slug_subcategoria) }}">
+                        {{ sub_cat.nombre_subcategoria }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
+        <li>
+            <a href="{{ url_for('catalogo_general') }}" class="cat-principal-link all-products-link">Ver Todos los Productos</a>
+        </li>
+    </ul>
+</aside>

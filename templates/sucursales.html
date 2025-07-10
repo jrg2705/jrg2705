@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Nuestras Sucursales - Tienda de Electrodomésticos{% endblock %}
+
+{% block content %}
+<section class="sucursales-list">
+    <h2>Nuestras Sucursales</h2>
+    {% if sucursales %}
+        {% for sucursal in sucursales %}
+        <article class="sucursal-card">
+            <div class="sucursal-info">
+                <h3>{{ sucursal.nombre }}</h3>
+                <p><strong>Dirección:</strong> {{ sucursal.direccion }}</p>
+                <p><strong>Horario:</strong> {{ sucursal.horario }}</p>
+                <p><strong>Teléfono:</strong> {{ sucursal.telefono }}</p>
+            </div>
+            <div class="sucursal-map-container">
+                {% if sucursal.mapa_iframe_html %}
+                    {{ sucursal.mapa_iframe_html|safe }}
+                {% else %}
+                    {# Fallback a la imagen placeholder si no hay iframe HTML #}
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ sucursal.direccion|urlencode }}" target="_blank" title="Ver mapa para {{ sucursal.nombre }}">
+                        <img src="https://via.placeholder.com/300x200.png?text=Mapa+No+Disponible" alt="Ver mapa de {{ sucursal.nombre }}" class="mapa-miniatura mapa-placeholder">
+                    </a>
+                {% endif %}
+            </div>
+        </article>
+        {% endfor %}
+    {% else %}
+        <p>No hay información de sucursales disponible en este momento.</p>
+    {% endif %}
+</section>
+{% endblock %}

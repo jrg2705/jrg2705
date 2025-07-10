@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titulo_catalogo|default("Catálogo") }} - Electro Hogar{% endblock %}
+
+{% block content_header %}
+    <div class="breadcrumbs-container">
+        <a href="{{ url_for('inicio') }}">Inicio</a> &raquo;
+        <a href="{{ url_for('catalogo_general') }}">Catálogo</a>
+        {% if breadcrumbs %}
+            {% for crumb in breadcrumbs %}
+                &raquo;
+                {% if crumb.url %}
+                    <a href="{{ crumb.url }}">{{ crumb.nombre }}</a>
+                {% else %}
+                    {{ crumb.nombre }}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+    <h2>{{ titulo_catalogo|default("Catálogo de Productos") }}</h2>
+{% endblock %}
+
+{% block content %}
+<section class="catalogo-list">
+    {% if productos %}
+        <div class="product-grid">
+            {% for producto in productos %}
+            <article class="product-card">
+                <div class="product-card-image-container">
+                    <a href="{{ url_for('detalle_producto', producto_id=producto.id) }}" class="product-card-link-img">
+                        {% if producto.imagen_url %}
+                            {% if producto.imagen_url.startswith('http') %}
+                                <img src="{{ producto.imagen_url }}" alt="Imagen de {{ producto.nombre }}" class="product-image">
+                            {% else %}
+                                <img src="{{ url_for('static', filename=producto.imagen_url) }}" alt="Imagen de {{ producto.nombre }}" class="product-image">
+                            {% endif %}
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x200.png?text={{ producto.nombre|urlencode }}" alt="Imagen de {{ producto.nombre }}" class="product-image">
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="product-card-content">
+                    <h3><a href="{{ url_for('detalle_producto', producto_id=producto.id) }}">{{ producto.nombre }}</a></h3>
+                    <div class="product-info">
+                        <p class="product-price">Precio: {{ producto.precio|format_rd }}</p>
+                        <p class="product-initial">Inicial: {{ producto.inicial|format_rd }}</p>
+                    </div>
+                    <div class="product-status">
+                        <p class="availability-general {% if producto.estado_disponibilidad_general == 'Disponible' %}available{% else %}unavailable{% endif %}">
+                            {{ producto.estado_disponibilidad_general }}
+                        </p>
+                        <a href="{{ url_for('detalle_producto', producto_id=producto.id) }}" class="btn-details">Ver Detalles</a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No hay productos disponibles para esta categoría o criterios de búsqueda.</p>
+    {% endif %}
+
+    {# Sección de Sugerencias Outlet #}
+    {% if sugerencias_outlet and sugerencias_outlet|length > 0 %}
+    <section class="sugerencias-especiales">
+        <hr class="section-divider">
+        <h3>{{ titulo_sugerencias|default("También te podría interesar...") }}</h3>
+        <div class="product-grid suggestions-grid">
+            {% for producto_sugerido in sugerencias_outlet %}
+            <article class="product-card">
+                <div class="product-card-image-container">
+                    <a href="{{ url_for('detalle_producto', producto_id=producto_sugerido.id) }}" class="product-card-link-img">
+                        {% if producto_sugerido.imagen_url %}
+                            {% if producto_sugerido.imagen_url.startswith('http') %}
+                                <img src="{{ producto_sugerido.imagen_url }}" alt="Imagen de {{ producto_sugerido.nombre }}" class="product-image">
+                            {% else %}
+                                <img src="{{ url_for('static', filename=producto_sugerido.imagen_url) }}" alt="Imagen de {{ producto_sugerido.nombre }}" class="product-image">
+                            {% endif %}
+                        {% else %}
+                            <img src="https://via.placeholder.com/300x200.png?text={{ producto_sugerido.nombre|urlencode }}" alt="Imagen de {{ producto_sugerido.nombre }}" class="product-image">
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="product-card-content">
+                    <h3><a href="{{ url_for('detalle_producto', producto_id=producto_sugerido.id) }}">{{ producto_sugerido.nombre }}</a></h3>
+                    <div class="product-info">
+                        <p class="product-price">Precio: {{ producto_sugerido.precio|format_rd }}</p>
+                        <p class="product-initial">Inicial: {{ producto_sugerido.inicial|format_rd }}</p>
+                    </div>
+                    <div class="product-status">
+                        <p class="availability-general {% if producto_sugerido.estado_disponibilidad_general == 'Disponible' %}available{% else %}unavailable{% endif %}">
+                            {{ producto_sugerido.estado_disponibilidad_general }}
+                        </p>
+                        <a href="{{ url_for('detalle_producto', producto_id=producto_sugerido.id) }}" class="btn-details">Ver Detalles</a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</section>
+{% endblock %}

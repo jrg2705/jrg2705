@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Bienvenido{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-image-container">
+        <img src="https://via.placeholder.com/350x300.png?text=Imagen+Tienda+ElectroHogar" alt="Imagen representativa de la tienda Electro Hogar" class="hero-main-image">
+    </div>
+    <div class="hero-content-container">
+        <h2>Bienvenido a Electro Hogar</h2>
+        <p>Tu mejor opción para electrodomésticos y artículos para el hogar de calidad. Explora nuestras sucursales y el catálogo completo.</p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('mostrar_sucursales') }}" class="btn">Nuestras Sucursales</a>
+            <a href="{{ url_for('catalogo_general') }}" class="btn btn-primary">Explorar Catálogo</a>
+        </div>
+    </div>
+</section>
+
+<section class="carousel-destacados">
+    <h2>Descubre Más</h2>
+    <div class="carousel-items-container">
+        <div class="carousel-items">
+            <article class="carousel-item">
+                <a href="{{ url_for('ofertas_temporada') }}">
+                    <img src="https://via.placeholder.com/280x180.png?text=Ofertas+Temporada" alt="Ofertas de Temporada">
+                    <div class="carousel-item-label"><h3>Ofertas de Temporada</h3></div>
+                </a>
+            </article>
+            <article class="carousel-item">
+                <a href="{{ url_for('productos_destacados') }}">
+                    <img src="https://via.placeholder.com/280x180.png?text=Productos+Destacados" alt="Productos Destacados">
+                    <div class="carousel-item-label"><h3>Productos Destacados</h3></div>
+                </a>
+            </article>
+            <article class="carousel-item">
+                <a href="{{ url_for('outlet') }}">
+                    <img src="https://via.placeholder.com/280x180.png?text=Outlet" alt="Outlet">
+                    <div class="carousel-item-label"><h3>Outlet</h3></div>
+                </a>
+            </article>
+            <article class="carousel-item">
+                <a href="{{ url_for('promociones') }}">
+                    <img src="https://via.placeholder.com/280x180.png?text=Promociones" alt="Promociones">
+                    <div class="carousel-item-label"><h3>Promociones</h3></div>
+                </a>
+            </article>
+            <article class="carousel-item">
+                <a href="{{ url_for('nuevos_ingresos') }}">
+                    <img src="https://via.placeholder.com/280x180.png?text=Nuevos+Ingresos" alt="Nuevos Ingresos">
+                    <div class="carousel-item-label"><h3>Nuevos Ingresos</h3></div>
+                </a>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="info-adicional">
+    <h3>¿Qué encontrarás?</h3>
+    <div class="info-columnas">
+        <div class="columna">
+            <h4>Variedad de Productos</h4>
+            <p>Desde lo último en tecnología para tu cocina hasta комфорт para tu habitación. Navega por nuestras categorías para encontrar exactamente lo que necesitas.</p>
+        </div>
+        <div class="columna">
+            <h4>Disponibilidad Actualizada</h4>
+            <p>Consulta la disponibilidad de cada producto en nuestras diferentes sucursales directamente desde el catálogo.</p>
+        </div>
+        <div class="columna">
+            <h4>Facilidades de Compra</h4>
+            <p>Ofrecemos precios competitivos y te mostramos el monto inicial (25%) para que planifiques tu compra.</p>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block categorias_sidebar %}
+    {# No mostramos la barra lateral de categorías en la página de inicio para un look más limpio #}
+    {# Opcionalmente, se podría mostrar aquí también si se quisiera #}
+{% endblock %}

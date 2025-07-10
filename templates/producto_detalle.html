@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}{{ producto.nombre if producto else "Producto no encontrado" }} - Electro Hogar{% endblock %}
+
+{% block content_header %}
+    {% if producto and breadcrumbs_producto %}
+    <div class="breadcrumbs-container">
+        <a href="{{ url_for('inicio') }}">Inicio</a> &raquo;
+        <a href="{{ url_for('catalogo_general') }}">Catálogo</a>
+        {% for crumb in breadcrumbs_producto %}
+            &raquo;
+            {% if crumb.url %}
+                <a href="{{ crumb.url }}">{{ crumb.nombre }}</a>
+            {% else %}
+                {{ crumb.nombre }} {# El último es el nombre del producto, sin enlace #}
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="product-detail">
+    {% if producto %}
+        <article class="product-detail-card">
+            <h2>{{ producto.nombre }}</h2>
+
+            <div class="product-detail-content">
+                <div class="product-detail-image-gallery">
+                    <div class="main-image-container">
+                        {% if producto.imagen_url %}
+                            {% if producto.imagen_url.startswith('http') %}
+                                <img id="main-product-image-display" src="{{ producto.imagen_url }}" alt="Imagen principal de {{ producto.nombre }}" style="cursor: pointer;">
+                            {% else %}
+                                <img id="main-product-image-display" src="{{ url_for('static', filename=producto.imagen_url) }}" alt="Imagen principal de {{ producto.nombre }}" style="cursor: pointer;">
+                            {% endif %}
+                        {% else %}
+                            <img id="main-product-image-display" src="https://via.placeholder.com/400x400.png?text={{ producto.nombre|urlencode }}" alt="Imagen principal de {{ producto.nombre }}">
+                        {% endif %}
+                    </div>
+
+                    {% if producto.imagenes_secundarias %}
+                    <div class="thumbnail-gallery">
+                        {# Mostrar la imagen principal también como primera miniatura si existe #}
+                        {% if producto.imagen_url %}
+                            <img src="{{ producto.imagen_url if producto.imagen_url.startswith('http') else url_for('static', filename=producto.imagen_url) }}"
+                                 alt="Miniatura de {{ producto.nombre }}"
+                                 class="thumbnail-image active-thumbnail"
+                                 data-fullimage-url="{{ producto.imagen_url if producto.imagen_url.startswith('http') else url_for('static', filename=producto.imagen_url) }}">
+                        {% endif %}
+
+                        {% for img_sec_url in producto.imagenes_secundarias %}
+                            <img src="{{ img_sec_url if img_sec_url.startswith('http') else url_for('static', filename=img_sec_url) }}"
+                                 alt="Miniatura de {{ producto.nombre }}"
+                                 class="thumbnail-image"
+                                 data-fullimage-url="{{ img_sec_url if img_sec_url.startswith('http') else url_for('static', filename=img_sec_url) }}">
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="product-detail-info">
+                    <p class="description">{{ producto.descripcion }}</p>
+                    <p class="price"><strong>Precio:</strong> {{ producto.precio|format_rd }}</p>
+                    {# 'inicial' ahora viene directamente del producto enriquecido #}
+                    <p class="initial-payment"><strong>Inicial:</strong> {{ producto.inicial|format_rd }}</p>
+
+                    <h3>Disponibilidad General:</h3>
+                    <p class="availability-general {% if producto.estado_disponibilidad_general == 'Disponible' %}available{% else %}unavailable{% endif %}">
+                        {{ producto.estado_disponibilidad_general }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="product-detail-actions">
+                <a href="{{ url_for('catalogo_general') }}" class="btn btn-secondary btn-back">Volver al Catálogo</a>
+                <a href="{{ url_for('solicitud_credito', producto_interes=producto.nombre) }}" class="btn btn-primary">Solicitar Crédito para este Producto</a>
+            </div>
+
+        </article>
+    {% else %}
+        <h2>Producto no encontrado</h2>
+        <p>El producto que estás buscando no existe o no está disponible.</p>
+        <a href="{{ url_for('catalogo_general') }}" class="btn-back">Volver al Catálogo</a>
+    {% endif %}
+</section>
+{% endblock %}

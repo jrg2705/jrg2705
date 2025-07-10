@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Solicitud Enviada{% endblock %}
+
+{% block content_header %}
+    <div class="breadcrumbs-container">
+        <a href="{{ url_for('inicio') }}">Inicio</a> &raquo; Solicitud de Crédito &raquo; Confirmación
+    </div>
+    <h2>Confirmación de Solicitud de Crédito</h2>
+{% endblock %}
+
+{% block content %}
+<section class="solicitud-enviada-section">
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">¡Solicitud Enviada con Éxito!</h4>
+        <p>
+            Gracias por enviar su solicitud de crédito. Hemos recibido su información correctamente.
+            Un asesor se pondrá en contacto con usted a la brevedad en el horario que nos indicó
+            para continuar con el proceso.
+        </p>
+        <hr>
+        <p class="mb-0">
+            Si tiene alguna pregunta inmediata, no dude en contactar a nuestro departamento de atención al cliente.
+        </p>
+    </div>
+
+    <div class="acciones-post-solicitud">
+        <a href="{{ url_for('catalogo_general') }}" class="btn btn-primary">Seguir Viendo Productos</a>
+        <a href="{{ url_for('inicio') }}" class="btn btn-secondary">Volver a la Página Principal</a>
+    </div>
+
+    {# Opcional: Mostrar un resumen de los datos enviados (solo para depuración o si es útil) #}
+    {# {% if datos_enviados %}
+    <div class="datos-enviados-resumen mt-4">
+        <h5>Resumen de su solicitud (Solo para demostración):</h5>
+        <ul>
+            {% for key, value in datos_enviados.items() %}
+                {% if key not in ['csrf_token', 'submit'] %}
+                    <li><strong>{{ key|replace('_', ' ')|capitalize }}:</strong> {{ value }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %} #}
+
+</section>
+{% endblock %}
+
+{% block categorias_sidebar %}
+    {# Ocultar el sidebar de categorías en la página de confirmación #}
+{% endblock %}
