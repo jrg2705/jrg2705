@@ -62,9 +62,11 @@ def slugify(text):
     return text
 
 sucursales_data = [
-    {"id": 1, "nombre": "Sucursal Centro", "direccion": "Calle Falsa 123, Ciudad Capital", "horario": "Lunes a Sábado: 9:00 - 20:00", "telefono": "555-1234"},
-    {"id": 2, "nombre": "Sucursal Norte", "direccion": "Avenida Siempre Viva 742, Distrito Norte", "horario": "Lunes a Viernes: 10:00 - 19:00, Sábado: 10:00 - 15:00", "telefono": "555-5678"},
-    {"id": 3, "nombre": "Sucursal Sur", "direccion": "Boulevard de los Sueños Rotos 45, Sector Sur", "horario": "Lunes a Sábado: 9:30 - 20:30", "telefono": "555-9012"}
+    {"id": 1, "nombre": "Sucursal Centro", "direccion": "Calle Falsa 123, Ciudad Capital", "horario": "Lunes a Sábado: 9:00 - 20:00", "telefono": "555-1234", "mapa_iframe_html": ""},
+    {"id": 2, "nombre": "Sucursal Norte", "direccion": "Avenida Siempre Viva 742, Distrito Norte", "horario": "Lunes a Viernes: 10:00 - 19:00, Sábado: 10:00 - 15:00", "telefono": "555-5678", "mapa_iframe_html": ""},
+    {"id": 3, "nombre": "Sucursal Sur", "direccion": "Boulevard de los Sueños Rotos 45, Sector Sur", "horario": "Lunes a Sábado: 9:30 - 20:30", "telefono": "555-9012", "mapa_iframe_html": ""},
+    {"id": 4, "nombre": "Sucursal Este Principal", "direccion": "Avenida del Sol Naciente 88, Zona Este", "horario": "Lunes a Sábado: 9:00 - 19:30", "telefono": "555-3456", "mapa_iframe_html": ""},
+    {"id": 5, "nombre": "Sucursal Oeste Comercial", "direccion": "Camino del Ocaso 101, Barrio Oeste", "horario": "Lunes a Viernes: 10:00 - 20:00, Sábado: 10:00 - 16:00", "telefono": "555-7890", "mapa_iframe_html": ""}
 ]
 
 productos_data = [
@@ -277,6 +279,9 @@ def obtener_productos_con_detalles(id_cat_principal_slug=None, id_sub_cat_slug=N
         else:
             prod_actual["estado_disponibilidad_general"] = "Agotado"
 
+        if "imagenes_secundarias" not in prod_actual:
+            prod_actual["imagenes_secundarias"] = []
+
         productos_filtrados.append(prod_actual)
 
     return productos_filtrados
@@ -330,14 +335,12 @@ def obtener_sugerencias_especiales_para_categoria(id_cat_principal_actual, id_su
         if id_subcategoria_actual and prod_original.get("id_subcategoria") != id_subcategoria_actual:
             continue
 
-        if etiqueta_sugerencia != "outlet" and etiqueta_sugerencia not in prod_original.get("etiquetas_especiales", []):
-            continue
-        elif etiqueta_sugerencia == "outlet" and "outlet" not in prod_original.get("etiquetas_especiales", []):
+        if etiqueta_sugerencia not in prod_original.get("etiquetas_especiales", []):
             continue
 
         # Enriquecer el producto
         prod_actual = prod_original.copy()
-        prod_actual["inicial"] = calcular_inicial(prod_actual["precio"]) # Esta es la línea 411 del traceback original
+        prod_actual["inicial"] = calcular_inicial(prod_actual["precio"])
         total_disponible_en_tiendas = 0
         for suc in sucursales_data:
             total_disponible_en_tiendas += obtener_disponibilidad_producto(prod_actual["id"], suc["id"])
@@ -397,7 +400,7 @@ if __name__ == '__main__':
     print(f"inexistente: {obtener_nombre_categoria(id_cat_principal_slug='inexistente')}")
 
     print("\n--- Productos (Todos) ---")
-    todos_los_productos = obtener_productos_con_detalles() # Debería mostrar solo regulares si no se especifica categoría
+    todos_los_productos = obtener_productos_con_detalles()
     for p in todos_los_productos:
         print(f"{p['nombre']} (Regular: {p.get('es_item_catalogo_regular', 'No Definido')}), Precio: ${p['precio']}, Inicial: ${p['inicial']}")
 
@@ -436,3 +439,6 @@ if __name__ == '__main__':
     sugerencias_micro_outlet = obtener_sugerencias_especiales_para_categoria(id_cat_principal_actual="cocina", id_subcategoria_actual="microondas", etiqueta_sugerencia="outlet")
     for p in sugerencias_micro_outlet:
         print(f"Sugerencia Outlet: {p['nombre']}, Precio: ${p['precio']}, Regular: {p.get('es_item_catalogo_regular')}")
+```
+
+Por favor, reemplaza el contenido de tu archivo `data_models.py` con este código y **confírmame cuando lo hayas hecho**. Luego te daré el código del siguiente archivo.
