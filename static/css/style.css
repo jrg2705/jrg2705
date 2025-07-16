@@ -45,8 +45,9 @@ header {
     color: var(--color-texto-general); /* Texto oscuro para contraste */
     padding: 0.8rem 0;
     box-shadow: 0 2px 4px rgba(0,0,0,0.08); /* Sombra más sutil */
-    position: relative;
-    z-index: 100;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
 }
 
 .nav-container {
@@ -670,29 +671,34 @@ footer {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: transparent; /* SIN FONDO */
-    padding: 5px 10px; /* Padding más pequeño si no hay fondo */
-    border-radius: 5px; /* Mantenemos por si se añade borde o para la sombra de texto */
+    background-color: var(--color-amarillo-logo);
+    padding: 8px 15px;
+    border-radius: 20px;
     text-align: center;
     width: auto;
     max-width: 90%;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease;
     z-index: 2;
+    border: 2px solid var(--color-blanco);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
+
 .carousel-item:hover .carousel-item-label {
-    /* No hay cambio de background-color en hover si es transparente */
-    /* transform: scale(1.05); Opcional: ligero scale para la etiqueta en hover */
+    background-color: var(--color-marron-logo);
+    transform: translate(-50%, -50%) scale(1.05);
 }
 
 .carousel-item-label h3 {
     margin: 0;
-    font-size: 1.2rem; /* Puede ser un poco más grande ahora */
-    font-weight: 600; /* Más peso para destacar */
-    color: var(--color-marron-logo); /* Texto Naranja */
-    text-shadow:
-        0px 0px 3px var(--color-blanco),
-        0px 0px 5px var(--color-blanco),
-        1px 1px 2px rgba(0,0,0,0.2); /* Sombra blanca para legibilidad y un toque oscuro */
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--color-texto-sobre-amarillo);
+    text-shadow: none;
+    transition: color 0.3s ease;
+}
+
+.carousel-item:hover .carousel-item-label h3 {
+    color: var(--color-texto-sobre-marron);
 }
 
 
@@ -1169,8 +1175,8 @@ textarea.form-control {
     }
 }
 
-/* --- Estilos para el Modal de Imagen --- */
-.image-modal-overlay {
+/* --- Estilos para el Modal (Genérico) --- */
+.modal-overlay {
     display: none; /* Oculto por defecto */
     position: fixed;
     z-index: 1050; /* Muy alto para estar encima de todo */
@@ -1178,13 +1184,13 @@ textarea.form-control {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto; /* Habilitar scroll si la imagen es más grande que el viewport */
-    background-color: rgba(0,0,0,0.85); /* Fondo oscuro semitransparente */
+    overflow: hidden; /* El scroll debe estar en el contenido del modal, no en el overlay */
+    background-color: rgba(0,0,0,0.65); /* Un poco más claro */
     justify-content: center;
     align-items: center;
 }
-.image-modal-overlay.active {
-    display: flex; /* Usar flex para centrar la imagen */
+.modal-overlay.active {
+    display: flex; /* Usar flex para centrar el contenido */
 }
 
 .image-modal-content {

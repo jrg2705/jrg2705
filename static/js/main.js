@@ -105,17 +105,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const termsConditionsModal = document.getElementById('terms-conditions-modal');
     const closeTermsModalButton = document.getElementById('close-terms-modal-button');
     const acceptTermsFromModalButton = document.getElementById('accept-terms-from-modal');
-    const aceptaTerminosCheckbox = document.getElementById('acepta_terminos'); // Asumiendo que el ID del checkbox es 'acepta_terminos' (Flask-WTF suele generarlo así)
+    const aceptaTerminosCheckbox = document.getElementById('acepta_terminos');
 
     if (openTermsModalLink && termsConditionsModal && closeTermsModalButton && aceptaTerminosCheckbox && acceptTermsFromModalButton) {
         openTermsModalLink.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevenir el comportamiento por defecto del enlace
-            termsConditionsModal.style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Evitar scroll del fondo
+            event.preventDefault();
+            termsConditionsModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         });
 
         function closeTermsModal() {
-            termsConditionsModal.style.display = 'none';
+            termsConditionsModal.classList.remove('active');
             document.body.style.overflow = 'auto';
         }
 
@@ -126,7 +126,6 @@ document.addEventListener('DOMContentLoaded', function() {
             closeTermsModal();
         });
 
-        // Cerrar modal si se hace clic fuera del contenido
         termsConditionsModal.addEventListener('click', function(event) {
             if (event.target === termsConditionsModal) {
                 closeTermsModal();
