@@ -439,6 +439,3 @@ if __name__ == '__main__':
     sugerencias_micro_outlet = obtener_sugerencias_especiales_para_categoria(id_cat_principal_actual="cocina", id_subcategoria_actual="microondas", etiqueta_sugerencia="outlet")
     for p in sugerencias_micro_outlet:
         print(f"Sugerencia Outlet: {p['nombre']}, Precio: ${p['precio']}, Regular: {p.get('es_item_catalogo_regular')}")
-```
-
-Por favor, reemplaza el contenido de tu archivo `data_models.py` con este código y **confírmame cuando lo hayas hecho**. Luego te daré el código del siguiente archivo.
