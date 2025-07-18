@@ -12,7 +12,7 @@
             {% if crumb.url %}
                 <a href="{{ crumb.url }}">{{ crumb.nombre }}</a>
             {% else %}
-                {{ crumb.nombre }} {# El último es el nombre del producto, sin enlace #}
+                {{ crumb.nombre }}
             {% endif %}
         {% endfor %}
     </div>
@@ -29,46 +29,16 @@
                 <div class="product-detail-image-gallery">
                     <div class="main-image-container">
                         {% if producto.imagen_url %}
-                            {% if producto.imagen_url.startswith('http') %}
-                                <img id="main-product-image-display" src="{{ producto.imagen_url }}" alt="Imagen principal de {{ producto.nombre }}" style="cursor: pointer;">
-                            {% else %}
-                                <img id="main-product-image-display" src="{{ url_for('static', filename=producto.imagen_url) }}" alt="Imagen principal de {{ producto.nombre }}" style="cursor: pointer;">
-                            {% endif %}
+                            <img id="main-product-image-display" src="{{ producto.imagen_url }}" alt="Imagen principal de {{ producto.nombre }}" style="cursor: pointer;">
                         {% else %}
                             <img id="main-product-image-display" src="https://via.placeholder.com/400x400.png?text={{ producto.nombre|urlencode }}" alt="Imagen principal de {{ producto.nombre }}">
                         {% endif %}
                     </div>
-
-                    {% if producto.imagenes_secundarias %}
-                    <div class="thumbnail-gallery">
-                        {# Mostrar la imagen principal también como primera miniatura si existe #}
-                        {% if producto.imagen_url %}
-                            <img src="{{ producto.imagen_url if producto.imagen_url.startswith('http') else url_for('static', filename=producto.imagen_url) }}"
-                                 alt="Miniatura de {{ producto.nombre }}"
-                                 class="thumbnail-image active-thumbnail"
-                                 data-fullimage-url="{{ producto.imagen_url if producto.imagen_url.startswith('http') else url_for('static', filename=producto.imagen_url) }}">
-                        {% endif %}
-
-                        {% for img_sec_url in producto.imagenes_secundarias %}
-                            <img src="{{ img_sec_url if img_sec_url.startswith('http') else url_for('static', filename=img_sec_url) }}"
-                                 alt="Miniatura de {{ producto.nombre }}"
-                                 class="thumbnail-image"
-                                 data-fullimage-url="{{ img_sec_url if img_sec_url.startswith('http') else url_for('static', filename=img_sec_url) }}">
-                        {% endfor %}
-                    </div>
-                    {% endif %}
                 </div>
 
                 <div class="product-detail-info">
                     <p class="description">{{ producto.descripcion }}</p>
                     <p class="price"><strong>Precio:</strong> {{ producto.precio|format_rd }}</p>
-                    {# 'inicial' ahora viene directamente del producto enriquecido #}
-                    <p class="initial-payment"><strong>Inicial:</strong> {{ producto.inicial|format_rd }}</p>
-
-                    <h3>Disponibilidad General:</h3>
-                    <p class="availability-general {% if producto.estado_disponibilidad_general == 'Disponible' %}available{% else %}unavailable{% endif %}">
-                        {{ producto.estado_disponibilidad_general }}
-                    </p>
                 </div>
             </div>
 

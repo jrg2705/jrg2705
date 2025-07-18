@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Categorías de Productos{% endblock %}
+
+{% block content_header %}
+    <div class="breadcrumbs-container">
+        <a href="{{ url_for('inicio') }}">Inicio</a> &raquo; Catálogo
+    </div>
+    <h2>{{ titulo_catalogo }}</h2>
+{% endblock %}
+
+{% block content %}
+<section class="category-grid">
+    {% for categoria in categorias %}
+    <div class="category-card">
+        <a href="{{ url_for('catalogo_por_categoria_principal', cat_principal_slug=categoria.slug) }}">
+            <img src="{{ categoria.imagen_url|default('https://via.placeholder.com/400x300.png?text=' + categoria.nombre, true) }}" alt="Imagen de la categoría {{ categoria.nombre }}" class="category-image">
+            <div class="category-card-content">
+                <h3>{{ categoria.nombre }}</h3>
+                <p>Ver productos &raquo;</p>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</section>
+{% endblock %}

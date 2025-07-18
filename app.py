@@ -1,16 +1,88 @@
 # -*- coding: utf-8 -*-
+import os
 from flask import Flask, render_template, abort, redirect, url_for, flash, request
-import data_models as dm
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 from flask_wtf import FlaskForm
 import babel.numbers
-from wtforms import StringField, SelectField, BooleanField, TextAreaField, SubmitField, TelField
+from wtforms import StringField, SelectField, BooleanField, TextAreaField, SubmitField, TelField, PasswordField
 from wtforms.validators import DataRequired, Email, Length, Optional, Regexp
 
 app = Flask(__name__)
-# Necesitamos una SECRET_KEY para que Flask-WTF funcione (protección CSRF)
-# En una aplicación real, esto debería ser un valor aleatorio y seguro, y no estar hardcodeado.
 app.config['SECRET_KEY'] = 'una-clave-secreta-muy-dificil-de-adivinar'
+# Configuración de la base de datos SQLite
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'tienda.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login' # Vista a la que redirigir si se requiere login
+admin = Admin(app, name='Electro Hogar Admin', template_mode='bootstrap3')
+
+# --- Modelos de la Base de Datos ---
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128))
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+class Categoria(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), unique=True, nullable=False)
+    imagen_url = db.Column(db.String(255), nullable=True)
+    slug = db.Column(db.String(100), unique=True, nullable=False)
+    subcategorias = db.relationship('SubCategoria', backref='categoria', lazy=True)
+
+    def __repr__(self):
+        return self.nombre
+
+class SubCategoria(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    slug = db.Column(db.String(100), nullable=False)
+    categoria_id = db.Column(db.Integer, db.ForeignKey('categoria.id'), nullable=False)
+    productos = db.relationship('Producto', backref='subcategoria', lazy=True)
+
+    def __repr__(self):
+        return f'{self.categoria.nombre} > {self.nombre}'
+
+class Producto(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(150), nullable=False)
+    descripcion = db.Column(db.Text, nullable=True)
+    precio = db.Column(db.Float, nullable=False)
+    imagen_url = db.Column(db.String(255), nullable=True)
+    subcategoria_id = db.Column(db.Integer, db.ForeignKey('sub_categoria.id'), nullable=False)
+    # Aquí podríamos añadir más campos como 'stock', 'etiquetas', etc.
+
+    def __repr__(self):
+        return self.nombre
+
+# --- Vistas del Panel de Administración ---
+class MyModelView(ModelView):
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for('login', next=request.url))
+
+admin.add_view(MyModelView(Categoria, db.session))
+admin.add_view(MyModelView(SubCategoria, db.session))
+admin.add_view(MyModelView(Producto, db.session))
 
 # --- Definición del Formulario de Solicitud de Crédito ---
 class SolicitudCreditoForm(FlaskForm):
@@ -82,7 +154,7 @@ class SolicitudCreditoForm(FlaskForm):
 # Context processor para que las categorías y el año actual estén disponibles en todas las plantillas
 @app.context_processor
 def inject_global_vars():
-    categorias_nav = dm.obtener_categorias_jerarquia()
+    categorias_nav = Categoria.query.order_by(Categoria.nombre).all()
     current_year = datetime.datetime.now().year
     return dict(categorias_nav=categorias_nav, current_year=current_year)
 
@@ -104,8 +176,62 @@ def format_rd_currency(value):
 app.jinja_env.filters['format_rd'] = format_rd_currency
 
 
+# --- Definición del Formulario de Contacto ---
+class ContactoForm(FlaskForm):
+    nombre = StringField('Nombre Completo', validators=[DataRequired(), Length(min=3, max=100)])
+    telefono = TelField('Teléfono de Contacto', validators=[DataRequired(), Regexp(r'^\+?1?\d{9,15}$', message="Número de teléfono inválido.")])
+    email = StringField('Correo Electrónico (Opcional)', validators=[Optional(), Email()])
+    provincia = StringField('Provincia', validators=[DataRequired(), Length(min=3, max=100)])
+    mensaje = TextAreaField('Mensaje', validators=[DataRequired(), Length(min=10, max=1000)])
+    submit = SubmitField('Enviar Mensaje')
+
 # Lista temporal para "almacenar" solicitudes de crédito (solo para simulación)
 solicitudes_credito_simuladas = []
+# Lista temporal para "almacenar" mensajes de contacto
+mensajes_contacto_simulados = []
+
+# --- Formulario de Login ---
+class LoginForm(FlaskForm):
+    username = StringField('Usuario', validators=[DataRequired()])
+    password = PasswordField('Contraseña', validators=[DataRequired()])
+    submit = SubmitField('Iniciar Sesión')
+
+# --- Rutas de Autenticación ---
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('admin.index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Usuario o contraseña inválidos', 'danger')
+            return redirect(url_for('login'))
+        login_user(user)
+        return redirect(url_for('admin.index'))
+    return render_template('login.html', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Has cerrado sesión.', 'info')
+    return redirect(url_for('inicio'))
+
+# --- Comando para crear usuario admin y DB ---
+@app.cli.command("init-db")
+def init_db_command():
+    """Crea las tablas de la base de datos y un usuario admin."""
+    with app.app_context():
+        db.create_all()
+        if not User.query.filter_by(username='admin').first():
+            admin_user = User(username='admin')
+            admin_user.set_password('admin')
+            db.session.add(admin_user)
+            db.session.commit()
+            print('Base de datos inicializada y usuario admin creado.')
+        else:
+            print('El usuario admin ya existe.')
 
 @app.route('/')
 def inicio():
@@ -160,6 +286,24 @@ def solicitud_enviada():
     # No se pasan datos directamente aquí usualmente si se usa flash para el mensaje.
     return render_template('solicitud_enviada.html')
 
+@app.route('/contacto', methods=['GET', 'POST'])
+def contacto():
+    form = ContactoForm()
+    if form.validate_on_submit():
+        nuevo_mensaje = {
+            'nombre': form.nombre.data,
+            'telefono': form.telefono.data,
+            'email': form.email.data,
+            'provincia': form.provincia.data,
+            'mensaje': form.mensaje.data,
+            'fecha': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        mensajes_contacto_simulados.append(nuevo_mensaje)
+        print(f"Nuevo mensaje de contacto: {nuevo_mensaje}") # Para depuración
+        flash('¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.', 'success')
+        return redirect(url_for('contacto'))
+    return render_template('contacto.html', form=form)
+
 
 @app.route('/sucursales')
 def mostrar_sucursales():
@@ -169,182 +313,65 @@ def mostrar_sucursales():
 
 @app.route('/catalogo/')
 def catalogo_general():
-    """Página que muestra todos los productos del catálogo."""
-    productos = dm.obtener_productos_con_detalles() # Sin filtro de categoría
-    return render_template('catalogo.html',
-                           productos=productos,
-                           titulo_catalogo="Todos los Productos")
+    """Página que muestra las categorías principales del catálogo."""
+    categorias = Categoria.query.order_by(Categoria.nombre).all()
+    return render_template('catalogo_categorias.html',
+                           categorias=categorias,
+                           titulo_catalogo="Explora Nuestras Categorías")
 
 @app.route('/categoria/<path:cat_principal_slug>/')
 def catalogo_por_categoria_principal(cat_principal_slug):
     """Página que muestra productos de una categoría principal."""
-    nombre_cat_principal, _ = dm.obtener_nombre_categoria(id_cat_principal_slug=cat_principal_slug)
-    if not nombre_cat_principal:
-        abort(404)
+    categoria = Categoria.query.filter_by(slug=cat_principal_slug).first_or_404()
 
-    # Obtener el ID de la categoría principal a partir del slug
-    id_cat_principal = None
-    for cat_info in dm.categorias_structure:
-        if dm.slugify(cat_info["nombre_cat_principal"]) == cat_principal_slug:
-            id_cat_principal = cat_info["id_cat_principal"]
-            break
-
-    productos = dm.obtener_productos_con_detalles(id_cat_principal_slug=cat_principal_slug)
-    sugerencias_outlet = []
-    if id_cat_principal: # Solo buscar sugerencias si encontramos el ID
-        sugerencias_outlet = dm.obtener_sugerencias_especiales_para_categoria(
-            id_cat_principal_actual=id_cat_principal,
-            etiqueta_sugerencia="outlet",
-            limite=3
-        )
+    # Obtener todos los productos de todas las subcategorías de esta categoría principal
+    productos = []
+    for subcat in categoria.subcategorias:
+        productos.extend(subcat.productos)
 
     return render_template('catalogo.html',
                            productos=productos,
-                           titulo_catalogo=nombre_cat_principal,
-                           breadcrumbs=[{"nombre": nombre_cat_principal, "url": None}],
-                           sugerencias_outlet=sugerencias_outlet,
-                           titulo_sugerencias="De Nuestro Outlet También Te Podría Interesar:")
+                           titulo_catalogo=categoria.nombre,
+                           breadcrumbs=[{"nombre": categoria.nombre, "url": None}])
 
 
 @app.route('/categoria/<path:cat_principal_slug>/<path:sub_cat_slug>/')
 def catalogo_por_subcategoria(cat_principal_slug, sub_cat_slug):
     """Página que muestra productos de una subcategoría."""
-    nombre_cat_principal, nombre_sub_cat = dm.obtener_nombre_categoria(
-        id_cat_principal_slug=cat_principal_slug,
-        id_sub_cat_slug=sub_cat_slug
-    )
+    categoria = Categoria.query.filter_by(slug=cat_principal_slug).first_or_404()
+    subcategoria = SubCategoria.query.filter_by(slug=sub_cat_slug, categoria_id=categoria.id).first_or_404()
 
-    if not nombre_cat_principal or not nombre_sub_cat:
-        abort(404)
+    productos = subcategoria.productos
 
-    # Obtener IDs de categoría y subcategoría
-    id_cat_principal = None
-    id_subcategoria = None
-    for cat_info in dm.categorias_structure:
-        if dm.slugify(cat_info["nombre_cat_principal"]) == cat_principal_slug:
-            id_cat_principal = cat_info["id_cat_principal"]
-            for sub_info in cat_info.get("subcategorias", []):
-                if dm.slugify(sub_info["nombre_subcategoria"]) == sub_cat_slug:
-                    id_subcategoria = sub_info["id_subcategoria"]
-                    break
-            break
-
-    productos = dm.obtener_productos_con_detalles(
-        id_cat_principal_slug=cat_principal_slug,
-        id_sub_cat_slug=sub_cat_slug
-    )
-
-    sugerencias_outlet = []
-    if id_cat_principal and id_subcategoria: # Solo buscar si tenemos ambos IDs
-        sugerencias_outlet = dm.obtener_sugerencias_especiales_para_categoria(
-            id_cat_principal_actual=id_cat_principal,
-            id_subcategoria_actual=id_subcategoria,
-            etiqueta_sugerencia="outlet",
-            limite=3
-        )
-
-    url_cat_principal = url_for('catalogo_por_categoria_principal', cat_principal_slug=cat_principal_slug)
+    url_cat_principal = url_for('catalogo_por_categoria_principal', cat_principal_slug=categoria.slug)
 
     return render_template('catalogo.html',
                            productos=productos,
-                           titulo_catalogo=f"{nombre_cat_principal} > {nombre_sub_cat}",
+                           titulo_catalogo=f"{categoria.nombre} > {subcategoria.nombre}",
                            breadcrumbs=[
-                               {"nombre": nombre_cat_principal, "url": url_cat_principal},
-                               {"nombre": nombre_sub_cat, "url": None}
-                           ],
-                           sugerencias_outlet=sugerencias_outlet,
-                           titulo_sugerencias="De Nuestro Outlet También Te Podría Interesar:")
+                               {"nombre": categoria.nombre, "url": url_cat_principal},
+                               {"nombre": subcategoria.nombre, "url": None}
+                           ])
 
 @app.route('/producto/<int:producto_id>')
 def detalle_producto(producto_id):
     """Página de detalles de un producto específico."""
-    # Usar la nueva función para obtener el producto ya enriquecido
-    producto_enriquecido = dm.obtener_producto_enriquecido_por_id(producto_id)
-
-    if not producto_enriquecido:
-        abort(404, description="Producto no encontrado")
-
-    # El producto ya viene con 'inicial' y 'disponibilidad_sucursales' y 'estado_disponibilidad_general'
-    # y también 'imagenes_secundarias'
+    producto = Producto.query.get_or_404(producto_id)
 
     # Breadcrumbs para el detalle del producto
-    cat_principal_slug_producto = None
-    sub_cat_slug_producto = None
-    nombre_cat_principal_prod = None
-    nombre_sub_cat_prod = None
+    subcategoria = producto.subcategoria
+    categoria = subcategoria.categoria
 
-    # Encontrar los slugs de categoría del producto
-    for cat_hierarquia in dm.obtener_categorias_jerarquia():
-        if cat_hierarquia['id_cat_principal'] == producto_enriquecido.get('id_cat_principal'):
-            cat_principal_slug_producto = cat_hierarquia['slug_cat_principal']
-            nombre_cat_principal_prod = cat_hierarquia['nombre_cat_principal']
-            if producto_enriquecido.get('id_subcategoria'):
-                for sub_cat_hierarquia in cat_hierarquia.get('subcategorias', []):
-                    if sub_cat_hierarquia['id_subcategoria'] == producto_enriquecido.get('id_subcategoria'):
-                        sub_cat_slug_producto = sub_cat_hierarquia['slug_subcategoria']
-                        nombre_sub_cat_prod = sub_cat_hierarquia['nombre_subcategoria']
-                        break
-            break
-
-    breadcrumbs_producto = []
-    if nombre_cat_principal_prod and cat_principal_slug_producto:
-        breadcrumbs_producto.append({
-            "nombre": nombre_cat_principal_prod,
-            "url": app.url_for('catalogo_por_categoria_principal', cat_principal_slug=cat_principal_slug_producto)
-        })
-        if nombre_sub_cat_prod and sub_cat_slug_producto:
-            breadcrumbs_producto.append({
-                "nombre": nombre_sub_cat_prod,
-                "url": app.url_for('catalogo_por_subcategoria', cat_principal_slug=cat_principal_slug_producto, sub_cat_slug=sub_cat_slug_producto)
-            })
-    breadcrumbs_producto.append({"nombre": producto_enriquecido['nombre'], "url": None})
-
+    breadcrumbs_producto = [
+        {"nombre": categoria.nombre, "url": url_for('catalogo_por_categoria_principal', cat_principal_slug=categoria.slug)},
+        {"nombre": subcategoria.nombre, "url": url_for('catalogo_por_subcategoria', cat_principal_slug=categoria.slug, sub_cat_slug=subcategoria.slug)},
+        {"nombre": producto.nombre, "url": None}
+    ]
 
     return render_template('producto_detalle.html',
-                           producto=producto_enriquecido, # Usar el producto enriquecido
-                           # 'inicial' y 'disponibilidad_sucursales' ya están en producto_enriquecido
+                           producto=producto,
                            breadcrumbs_producto=breadcrumbs_producto)
 
-# --- Rutas para las Secciones Especiales del Carrusel ---
-@app.route('/ofertas-temporada/')
-def ofertas_temporada():
-    productos = dm.obtener_productos_por_etiqueta_especial("oferta_temporada")
-    return render_template('catalogo.html',
-                           productos=productos,
-                           titulo_catalogo="Ofertas de Temporada",
-                           breadcrumbs=[{"nombre": "Ofertas de Temporada", "url": None}])
-
-@app.route('/productos-destacados/')
-def productos_destacados():
-    productos = dm.obtener_productos_por_etiqueta_especial("destacado")
-    return render_template('catalogo.html',
-                           productos=productos,
-                           titulo_catalogo="Productos Destacados",
-                           breadcrumbs=[{"nombre": "Productos Destacados", "url": None}])
-
-@app.route('/outlet/')
-def outlet():
-    productos = dm.obtener_productos_por_etiqueta_especial("outlet")
-    return render_template('catalogo.html',
-                           productos=productos,
-                           titulo_catalogo="Outlet",
-                           breadcrumbs=[{"nombre": "Outlet", "url": None}])
-
-@app.route('/promociones/')
-def promociones():
-    productos = dm.obtener_productos_por_etiqueta_especial("promocion")
-    return render_template('catalogo.html',
-                           productos=productos,
-                           titulo_catalogo="Promociones",
-                           breadcrumbs=[{"nombre": "Promociones", "url": None}])
-
-@app.route('/nuevos-ingresos/')
-def nuevos_ingresos():
-    productos = dm.obtener_productos_por_etiqueta_especial("nuevo_ingreso")
-    return render_template('catalogo.html',
-                           productos=productos,
-                           titulo_catalogo="Nuevos Ingresos",
-                           breadcrumbs=[{"nombre": "Nuevos Ingresos", "url": None}])
 
 
 # Manejador de errores 404

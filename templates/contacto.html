@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Contacto{% endblock %}
+
+{% block content_header %}
+    <div class="breadcrumbs-container">
+        <a href="{{ url_for('inicio') }}">Inicio</a> &raquo; Contacto
+    </div>
+    <h2>Ponte en Contacto con Nosotros</h2>
+{% endblock %}
+
+{% block content %}
+<section class="solicitud-credito-form-section"> {# Reutilizamos la clase para consistencia de estilo #}
+    <p>¿Tienes alguna pregunta o comentario? Llena el siguiente formulario y nuestro equipo te responderá a la brevedad posible.</p>
+
+    <form method="POST" action="{{ url_for('contacto') }}" novalidate>
+        {{ form.hidden_tag() }} {# CSRF Token #}
+
+        <fieldset>
+            <legend>Tu Información</legend>
+            <div class="form-group">
+                {{ form.nombre.label(class="form-label") }}
+                {{ form.nombre(class="form-control" + (" is-invalid" if form.nombre.errors else ""), placeholder="Ej: Juan Pérez") }}
+                {% if form.nombre.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.nombre.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.telefono.label(class="form-label") }}
+                {{ form.telefono(class="form-control" + (" is-invalid" if form.telefono.errors else ""), placeholder="Ej: +18091234567") }}
+                {% if form.telefono.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.telefono.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.email.label(class="form-label") }}
+                {{ form.email(class="form-control" + (" is-invalid" if form.email.errors else ""), placeholder="Ej: correo@dominio.com") }}
+                {% if form.email.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.provincia.label(class="form-label") }}
+                {{ form.provincia(class="form-control" + (" is-invalid" if form.provincia.errors else ""), placeholder="Ej: Santo Domingo") }}
+                {% if form.provincia.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.provincia.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Tu Mensaje</legend>
+            <div class="form-group">
+                {{ form.mensaje.label(class="form-label") }}
+                {{ form.mensaje(class="form-control" + (" is-invalid" if form.mensaje.errors else ""), rows=6, placeholder="Escribe tu consulta aquí...") }}
+                {% if form.mensaje.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.mensaje.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </fieldset>
+
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary btn-lg") }}
+        </div>
+    </form>
+</section>
+{% endblock %}
+
+{% block categorias_sidebar %}
+    {# Ocultamos el sidebar en la página de contacto para dar más espacio al formulario #}
+{% endblock %}
