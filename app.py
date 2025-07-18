@@ -50,6 +50,17 @@ class Categoria(db.Model):
     def __repr__(self):
         return self.nombre
 
+class Sucursal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nombre = db.Column(db.String(100), nullable=False)
+    direccion = db.Column(db.String(255), nullable=False)
+    horario = db.Column(db.String(150), nullable=True)
+    telefono = db.Column(db.String(20), nullable=True)
+    mapa_iframe_html = db.Column(db.Text, nullable=True)
+
+    def __repr__(self):
+        return self.nombre
+
 class SubCategoria(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
@@ -83,6 +94,7 @@ class MyModelView(ModelView):
 admin.add_view(MyModelView(Categoria, db.session))
 admin.add_view(MyModelView(SubCategoria, db.session))
 admin.add_view(MyModelView(Producto, db.session))
+admin.add_view(MyModelView(Sucursal, db.session))
 
 # --- Definición del Formulario de Solicitud de Crédito ---
 class SolicitudCreditoForm(FlaskForm):
@@ -308,7 +320,7 @@ def contacto():
 @app.route('/sucursales')
 def mostrar_sucursales():
     """Página que lista las sucursales."""
-    sucursales = dm.sucursales_data
+    sucursales = Sucursal.query.order_by(Sucursal.nombre).all()
     return render_template('sucursales.html', sucursales=sucursales)
 
 @app.route('/catalogo/')
