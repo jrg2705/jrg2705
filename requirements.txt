@@ -5,7 +5,7 @@ Flask-Admin==1.6.0
 WTForms==3.0.1
 Flask-Login==0.6.3
 Flask-WTF==1.2.2
-email-validator==2.2.1
+email-validator==2.2.0
 Babel==2.17.0
 gunicorn==22.0.0
 Werkzeug==2.2.3
