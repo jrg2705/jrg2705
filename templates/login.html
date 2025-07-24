@@ -2,44 +2,29 @@
 
 {% block title %}Iniciar Sesión - Admin{% endblock %}
 
-{% block content_header %}
-    <h2>Acceso de Administrador</h2>
-{% endblock %}
-
 {% block content %}
-<section class="login-form-section">
-    <p>Por favor, introduce tus credenciales para acceder al panel de administración.</p>
-
-    <form method="POST" action="{{ url_for('login') }}" novalidate>
-        {{ form.hidden_tag() }}
-
-        <div class="form-group">
-            {{ form.username.label(class="form-label") }}
-            {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), size=32) }}
-            {% if form.username.errors %}
-                <div class="invalid-feedback">
-                    {% for error in form.username.errors %}{{ error }}{% endfor %}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            {{ form.password.label(class="form-label") }}
-            {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), size=32) }}
-            {% if form.password.errors %}
-                <div class="invalid-feedback">
-                    {% for error in form.password.errors %}{{ error }}{% endfor %}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            {{ form.submit(class="btn btn-primary") }}
-        </div>
-    </form>
-</section>
+<div class="login-form-section">
+    <div class="login-card">
+        <h3>Acceso de Administrador</h3>
+        <p>Introduce tus credenciales para continuar.</p>
+        
+        <form method="POST" action="{{ url_for('login') }}" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.username.label(class="form-label") }}
+                {{ form.username(class="form-control", size=32) }}
+            </div>
+            <div class="form-group">
+                {{ form.password.label(class="form-label") }}
+                {{ form.password(class="form-control", size=32) }}
+            </div>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-primary btn-block") }}
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
 
 {% block categorias_sidebar %}
-    {# Ocultamos el sidebar en la página de login #}
 {% endblock %}

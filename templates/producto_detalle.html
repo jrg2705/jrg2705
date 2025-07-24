@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ producto.nombre if producto else "Producto no encontrado" }} - Electro Hogar{% endblock %}
+{% block title %}{{ producto.nombre if producto else "Producto no encontrado" }}{% endblock %}
 
 {% block content_header %}
     {% if producto and breadcrumbs_producto %}
@@ -8,7 +8,7 @@
         <a href="{{ url_for('inicio') }}">Inicio</a> &raquo;
         <a href="{{ url_for('catalogo_general') }}">Catálogo</a>
         {% for crumb in breadcrumbs_producto %}
-            &raquo;
+            &raquo; 
             {% if crumb.url %}
                 <a href="{{ crumb.url }}">{{ crumb.nombre }}</a>
             {% else %}
@@ -24,24 +24,48 @@
     {% if producto %}
         <article class="product-detail-card">
             <h2>{{ producto.nombre }}</h2>
-
+            
             <div class="product-detail-content">
                 <div class="product-detail-image-gallery">
                     <div class="main-image-container">
-                        {% if producto.imagen_url %}
-                            <img id="main-product-image-display" src="{{ producto.imagen_url }}" alt="Imagen principal de {{ producto.nombre }}" style="cursor: pointer;">
-                        {% else %}
-                            <img id="main-product-image-display" src="https://via.placeholder.com/400x400.png?text={{ producto.nombre|urlencode }}" alt="Imagen principal de {{ producto.nombre }}">
-                        {% endif %}
+                        <img id="main-product-image-display" 
+                             src="{{ producto.imagen_url or 'https://via.placeholder.com/400x400.png?text=' + producto.nombre|urlencode }}" 
+                             alt="Imagen principal de {{ producto.nombre }}" 
+                             style="cursor: pointer;">
                     </div>
-                </div>
+                    
+                    {% if producto.imagenes_secundarias.count() > 0 %}
+                    <div class="thumbnail-gallery">
+                        <img class="thumbnail-image active-thumbnail"
+                             src="{{ producto.imagen_url or 'https://via.placeholder.com/80x80.png?text=N/A' }}" 
+                             data-fullimage-url="{{ producto.imagen_url or 'https://via.placeholder.com/400x400.png?text=N/A' }}"
+                             alt="Miniatura de {{ producto.nombre }}">
 
+                        {% for img in producto.imagenes_secundarias %}
+                        <img class="thumbnail-image" 
+                             src="{{ url_for('static', filename='img/uploads/' + img.url) }}" 
+                             data-fullimage-url="{{ url_for('static', filename='img/uploads/' + img.url) }}"
+                             alt="Miniatura secundaria de {{ producto.nombre }}">
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                
                 <div class="product-detail-info">
                     <p class="description">{{ producto.descripcion }}</p>
                     <p class="price"><strong>Precio:</strong> {{ producto.precio|format_rd }}</p>
+                    
+                    {% if producto.aplica_financiamiento %}
+                    <p class="initial-payment"><strong>Inicial desde:</strong> {{ producto.precio|inicial_rd }}</p>
+                    {% endif %}
+                    
+                    <!-- <h3>Disponibilidad:</h3> -->
+                    <p class="availability-general {% if producto.disponible %}available{% else %}unavailable{% endif %}">
+                        {% if producto.disponible %}Disponible{% else %}Agotado{% endif %}
+                    </p>
                 </div>
             </div>
-
+            
             <div class="product-detail-actions">
                 <a href="{{ url_for('catalogo_general') }}" class="btn btn-secondary btn-back">Volver al Catálogo</a>
                 <a href="{{ url_for('solicitud_credito', producto_interes=producto.nombre) }}" class="btn btn-primary">Solicitar Crédito para este Producto</a>

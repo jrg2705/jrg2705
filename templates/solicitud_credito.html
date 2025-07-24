@@ -12,7 +12,7 @@
 {% block content %}
 <section class="solicitud-credito-form-section">
     <p>Por favor, complete el siguiente formulario para solicitar su crédito. Nos pondremos en contacto con usted a la brevedad.</p>
-
+    
     <form method="POST" action="{{ url_for('solicitud_credito') }}" novalidate>
         {{ form.hidden_tag() }} {# CSRF Token #}
 
@@ -175,7 +175,7 @@
                 {% endif %}
             </div>
 
-            <div class="form-group terms-conditions-box">
+            <!-- <div class="form-group terms-conditions-box">
                 <h4>Términos y Condiciones para la Solicitud de Crédito</h4>
                 <div class="terms-text-container">
                     <p>Al enviar esta solicitud, usted declara que toda la información proporcionada es veraz y completa. Autoriza a Electro Hogar y/o sus entidades financieras afiliadas a verificar toda la información suministrada, incluyendo historial crediticio en las centrales de riesgo y referencias personales/comerciales.</p>
@@ -187,7 +187,7 @@
                     <p><strong>Incumplimiento:</strong> El incumplimiento de las obligaciones de pago generará los intereses moratorios correspondientes y podría resultar en reportes negativos a las centrales de riesgo, afectando su historial crediticio, además de las acciones de cobro legal pertinentes.</p>
                     <p>Al marcar la casilla "Acepto los Términos y Condiciones...", usted confirma que ha leído, entendido y aceptado todos los puntos anteriores.</p>
                 </div>
-            </div>
+            </div> -->
 
             <div class="form-group form-check">
                 {{ form.acepta_terminos(class="form-check-input" + (" is-invalid" if form.acepta_terminos.errors else "")) }}
@@ -201,7 +201,7 @@
                 {% endif %}
             </div>
         </fieldset>
-
+        
         <div class="form-group">
             {{ form.submit(class="btn btn-primary btn-lg") }}
         </div>
@@ -215,10 +215,10 @@
         <h4>Términos y Condiciones de la Solicitud</h4>
         <div class="terms-text-container-modal">
             <!-- El contenido de los términos se mantiene igual -->
-            <p>Al enviar esta solicitud, usted declara que toda la información proporcionada es veraz y completa. Autoriza a Electro Hogar y/o sus entidades financieras afiliadas a verificar toda la información suministrada, incluyendo historial crediticio en las centrales de riesgo y referencias personales/comerciales.</p>
-            <p>Entiende que la aprobación del crédito está sujeta a las políticas de crédito vigentes de Electro Hogar y/o sus entidades financieras afiliadas, y que el envío de esta solicitud no garantiza la aprobación del mismo.</p>
+            <p>Al enviar esta solicitud, usted declara que toda la información proporcionada es veraz y completa. Autoriza a Jabel Muebles y/o sus entidades financieras afiliadas a verificar toda la información suministrada, incluyendo historial crediticio en las centrales de riesgo y referencias personales/comerciales.</p>
+            <p>Entiende que la aprobación del crédito está sujeta a las políticas de crédito vigentes de Jabel Muebles y/o sus entidades financieras afiliadas, y que el envío de esta solicitud no garantiza la aprobación del mismo.</p>
             <p>En caso de ser aprobado, se le informarán las condiciones específicas del crédito, incluyendo tasa de interés, plazo, cuotas, y cualquier otro cargo aplicable, las cuales deberá aceptar explícitamente para formalizar el crédito.</p>
-            <p>Electro Hogar se compromete a proteger sus datos personales de acuerdo con nuestra Política de Privacidad y las leyes aplicables. Su información será utilizada exclusivamente para el proceso de evaluación y gestión de su solicitud de crédito.</p>
+            <p>Jabel Muebles se compromete a proteger sus datos personales de acuerdo con nuestra Política de Privacidad y las leyes aplicables. Su información será utilizada exclusivamente para el proceso de evaluación y gestión de su solicitud de crédito.</p>
             <p>Usted tiene derecho a acceder, rectificar y cancelar sus datos personales, así como a oponerse a su tratamiento o revocar el consentimiento que para tal fin nos haya otorgado, a través de los procedimientos que hemos implementado. Para conocer dichos procedimientos, los requisitos y plazos, se puede poner en contacto con nuestro departamento de atención al cliente.</p>
             <p><strong>Política de Comisiones y Cargos:</strong> Antes de la formalización del crédito, se le informará detalladamente sobre cualquier comisión por estudio de crédito, seguros obligatorios, cargos por mora, o cualquier otro costo asociado al crédito. Es su responsabilidad revisar y entender estos cargos.</p>
             <p><strong>Incumplimiento:</strong> El incumplimiento de las obligaciones de pago generará los intereses moratorios correspondientes y podría resultar en reportes negativos a las centrales de riesgo, afectando su historial crediticio, además de las acciones de cobro legal pertinentes.</p>

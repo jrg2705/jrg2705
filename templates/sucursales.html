@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Nuestras Sucursales - Tienda de Electrodomésticos{% endblock %}
+{% block title %}Nuestras Sucursales - Electro Hogar{% endblock %}
+
+{% block content_header %}
+    <h2>Nuestras Sucursales</h2>
+{% endblock %}
 
 {% block content %}
 <section class="sucursales-list">
-    <h2>Nuestras Sucursales</h2>
     {% if sucursales %}
         {% for sucursal in sucursales %}
         <article class="sucursal-card">
@@ -15,7 +18,7 @@
                 <p><strong>Teléfono:</strong> {{ sucursal.telefono }}</p>
             </div>
             <div class="sucursal-map-container">
-                {% if sucursal.mapa_iframe_html %}
+                {% if sucursal.mapa_iframe_html and sucursal.mapa_iframe_html|trim != "" %}
                     {{ sucursal.mapa_iframe_html|safe }}
                 {% else %}
                     {# Fallback a la imagen placeholder si no hay iframe HTML #}

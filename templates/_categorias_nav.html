@@ -1,16 +1,18 @@
-<aside class="categorias-sidebar" id="categorias-sidebar-nav">
+<aside class="categorias-sidebar" id="categorias-sidebar-nav" aria-label="Navegación de categorías">
     <h3>Categorías</h3>
     <ul class="lista-categorias-principales">
         {% for cat in categorias_nav %}
-        <li>
-            <a href="{{ url_for('catalogo_por_categoria_principal', cat_principal_slug=cat.slug) }}"
-               class="cat-principal-link">{{ cat.nombre }}</a>
-            {% if cat.subcategorias %}
+        <li class="{% if cat.subcategorias.count() > 0 %}has-submenu{% endif %}">
+            <a href="{{ url_for('catalogo_por_categoria_principal', cat_principal_slug=cat.slug) }}" class="cat-principal-link">
+                <span>{{ cat.nombre }}</span>
+                {% if cat.subcategorias.count() > 0 %}<span class="submenu-toggle">+</span>{% endif %}
+            </a>
+            {% if cat.subcategorias.count() > 0 %}
             <ul class="lista-subcategorias">
                 {% for subcat in cat.subcategorias %}
                 <li>
                     <a href="{{ url_for('catalogo_por_subcategoria', cat_principal_slug=cat.slug, sub_cat_slug=subcat.slug) }}">
-                        {{ subcat.nombre }}
+                        - {{ subcat.nombre }}
                     </a>
                 </li>
                 {% endfor %}
@@ -18,8 +20,6 @@
             {% endif %}
         </li>
         {% endfor %}
-        <li>
-            <a href="{{ url_for('catalogo_general') }}" class="cat-principal-link all-products-link">Ver Todas las Categorías</a>
-        </li>
     </ul>
+    <a href="{{ url_for('catalogo_general') }}" class="all-products-link">Ver Todos los Departamentos</a>
 </aside>

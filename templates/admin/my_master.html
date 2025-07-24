@@ -1,0 +1,22 @@
+{% extends 'admin/base.html' %}
+
+{% block access_control %}
+  <div class="navbar-text pull-right">
+    {% if current_user.is_authenticated %}
+        Conectado como <strong>{{ current_user.username }}</strong> | 
+        <a href="{{ url_for('logout') }}" title="Cerrar Sesión">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </a>
+    {% else %}
+        <a href="{{ url_for('login') }}">
+            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+        </a>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{# Este bloque es opcional, pero necesario si quieres los íconos de Font Awesome #}
+{% block head_css %}
+  {{ super() }}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}

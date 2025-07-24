@@ -12,7 +12,7 @@
     --color-fondo-general: #fdf8f5; /* Un beige muy sutil, tirando a blanco hueso */
     --color-texto-general: #3a3a3a; /* Un gris oscuro, no negro puro */
     --color-texto-secundario: #5c5c5c;
-
+    
     --color-blanco: #FFFFFF;
     --color-gris-claro-bordes: #d1d1d1;
     --color-gris-fondo-tarjeta: #FFFFFF;
@@ -59,19 +59,19 @@ header {
 }
 
 .btn-hamburguesa {
-    display: none;
+    display: none; 
     background: none;
     border: none;
     color: var(--color-marron-logo); /* Color del ícono hamburguesa */
-    font-size: 1.8rem;
+    font-size: 1.8rem; 
     cursor: pointer;
     padding: 5px 10px;
-    margin-right: 15px;
+    margin-right: 15px; 
 }
 
-header h1 {
-    margin: 0;
-    flex-grow: 1;
+header h1 { 
+    margin: 0; 
+    flex-grow: 1; 
 }
 header h1 a {
     color: var(--color-rojo-logo); /* Actualizado por el usuario */
@@ -121,7 +121,7 @@ header .main-nav ul li a:hover, header .main-nav ul li a.active {
 
 .container-principal {
     display: flex;
-    flex: 1;
+    flex: 1; 
     max-width: 1200px;
     margin-left: auto; /* Centrado */
     margin-right: auto; /* Centrado */
@@ -129,16 +129,16 @@ header .main-nav ul li a:hover, header .main-nav ul li a.active {
     padding-right: 20px; /* Padding de la página */
     /* box-sizing: border-box; Ya está global con * */
     width: 100%; /* Para asegurar que se comporte bien si el viewport es menor a 1200px */
-    gap: 20px;
+    gap: 20px; 
 }
 
 .categorias-sidebar {
-    flex: 0 0 250px;
+    flex: 0 0 250px; 
     background-color: var(--color-blanco); /* Fondo blanco para el sidebar */
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.07); /* Sombra ligeramente más pronunciada */
-    height: fit-content;
+    height: fit-content; 
 }
 
 .categorias-sidebar h3 {
@@ -168,7 +168,7 @@ header .main-nav ul li a:hover, header .main-nav ul li a.active {
     transition: color 0.2s ease, background-color 0.2s ease;
     border-radius: 4px; /* Para hover con fondo */
 }
-.lista-categorias-principales > li > a:hover,
+.lista-categorias-principales > li > a:hover, 
 .all-products-link:hover {
     color: var(--color-texto-sobre-amarillo); /* Texto oscuro */
     background-color: var(--color-amarillo-logo); /* Fondo amarillo en hover */
@@ -181,7 +181,7 @@ header .main-nav ul li a:hover, header .main-nav ul li a.active {
 }
 
 .lista-subcategorias {
-    padding-left: 15px;
+    padding-left: 15px; 
     margin-top: 5px;
     border-left: 2px solid var(--color-gris-claro-bordes); /* Línea sutil para indentación */
 }
@@ -191,17 +191,17 @@ header .main-nav ul li a:hover, header .main-nav ul li a.active {
     color: var(--color-azul-logo); /* Subcategorías en azul */
     font-size: 0.9rem; /* Ligeramente más pequeño */
     display: block;
-    padding: 4px 0;
+    padding: 4px 0; 
     transition: color 0.2s ease;
 }
 .lista-subcategorias li a:hover {
-    color: var(--color-rojo-logo);
+    color: var(--color-rojo-logo); 
 }
 
 
 .content-area {
-    flex: 1;
-    background-color: var(--color-blanco);
+    flex: 1; 
+    background-color: var(--color-blanco); 
     padding: 20px;
     border-radius: 8px;
     width: 100%; /* Asegurar que content-area tome el ancho disponible de su padre flex */
@@ -209,8 +209,8 @@ header .main-nav ul li a:hover, header .main-nav ul li a.active {
     /* overflow: hidden;  No poner overflow hidden aquí si el carrusel está dentro y necesita scroll */
 }
 /* Todos los h2 dentro de .content-area (títulos de sección) */
-.content-area > h2,
-.sucursales-list > h2,
+.content-area > h2, 
+.sucursales-list > h2, 
 .catalogo-list > h2,
 .product-detail > h2, /* Si .product-detail es el wrapper directo del h2 */
 .solicitud-credito-form-section > h2, /* Si el h2 está directo en la sección del form */
@@ -218,7 +218,7 @@ header .main-nav ul li a:hover, header .main-nav ul li a.active {
 .error-page > h2 {
     color: var(--color-marron-logo);
     text-align: center;
-    margin-top: 0;
+    margin-top: 0; 
     margin-bottom: 30px;
     border-bottom: 2px solid var(--color-rojo-logo); /* Línea divisoria roja más pronunciada */
     padding-bottom: 10px;
@@ -229,24 +229,97 @@ header .main-nav ul li a:hover, header .main-nav ul li a.active {
 footer {
     text-align: center;
     padding: 1.5rem;
-    background: var(--color-marron-logo);
-    color: var(--color-texto-sobre-marron);
-    margin-top: auto;
+    background: var(--color-marron-logo); 
+    color: var(--color-texto-sobre-marron); 
+    margin-top: auto; 
 }
 
 /* Breadcrumbs */
 .breadcrumbs-container {
     margin-bottom: 20px;
     font-size: 0.9rem;
-    color: var(--color-texto-secundario);
+    color: var(--color-texto-secundario); 
 }
 .breadcrumbs-container a {
-    color: var(--color-azul-logo);
+    color: var(--color-azul-logo); 
     text-decoration: none;
 }
 .breadcrumbs-container a:hover {
     text-decoration: underline;
-    color: var(--color-rojo-logo);
+    color: var(--color-rojo-logo); 
+}
+
+/* --- Estilos para el Acordeón de Categorías (Prueba de Depuración) --- */
+
+.lista-subcategorias {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+    /* No uses display: none; aquí, interfiere con la transición */
+}
+
+/* La clase .open en el LI padre activará la transición */
+.has-submenu.open .lista-subcategorias {
+    max-height: 500px; /* Un valor fijo suficientemente grande */
+}
+
+.cat-principal-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.submenu-toggle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: transform 0.3s ease;
+}
+
+.has-submenu.open > .cat-principal-link .submenu-toggle {
+    transform: rotate(45deg);
+}
+
+/* --- Estilos para la Página de Login --- */
+.login-form-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.login-card {
+    background-color: var(--color-blanco);
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+}
+
+.login-card h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: var(--color-marron-logo);
+}
+
+.login-card p {
+    margin-bottom: 25px;
+    color: var(--color-texto-secundario);
+}
+
+.login-card .form-group {
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.login-card .btn-block {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    margin-top: 10px;
 }
 
 /* --- Botones --- */
@@ -329,7 +402,7 @@ footer {
 
 /* Página de Inicio (index.html) */
 .hero {
-    background: var(--color-gris-azulado-header);
+    background: var(--color-gris-azulado-header); 
     padding: 30px 20px; /* Ajustar padding */
     border-radius: 8px;
     margin-bottom: 30px;
@@ -341,6 +414,7 @@ footer {
 .hero-image-container {
     flex: 1; /* Ocupa una parte del espacio */
     text-align: center; /* Centrar la imagen si es más pequeña que el contenedor */
+    /* order: 2; */
 }
 .hero-main-image {
     max-width: 100%;
@@ -353,18 +427,20 @@ footer {
 .hero-content-container {
     flex: 2; /* Ocupa dos partes del espacio, más ancho para el texto */
     text-align: left; /* Alinear texto a la izquierda en escritorio */
+    /* order: 1; */
 }
 
-.hero h2 {
+.hero h2 { 
     font-size: 2.5rem; /* Ligeramente más pequeño */
     margin-top: 0; /* Quitar margen superior si es el primer elemento */
-    margin-bottom: 15px;
+    margin-bottom: 1px;
     color: var(--color-rojo-logo);  /* Actualizado por el usuario */
-    border-bottom: none;
+    border-bottom: none; 
 }
 .hero p {
     font-size: 1.2rem; /* Ligeramente más pequeño */
-    margin-bottom: 25px;
+    margin-bottom: 80px;
+    margin-top: 3px;
     color: var(--color-texto-secundario);
 }
 .hero-buttons {
@@ -381,7 +457,7 @@ footer {
     margin-top: 40px;
     text-align: center;
 }
-.info-adicional h3 {
+.info-adicional h3 { 
     font-size: 1.8rem;
     margin-bottom: 20px;
     color: var(--color-marron-logo);
@@ -395,12 +471,12 @@ footer {
 .columna {
     flex: 1;
     padding: 15px;
-    background-color: var(--color-blanco);
+    background-color: var(--color-blanco); 
     border: 1px solid var(--color-gris-claro-bordes);
     border-radius: 5px;
 }
 .columna h4 {
-    color: var(--color-azul-logo);
+    color: var(--color-azul-logo); 
     margin-bottom: 10px;
 }
 
@@ -408,30 +484,30 @@ footer {
 /* Sucursales (sucursales.html) */
 /* .sucursales-list > h2 ya está cubierto por la regla general de .content-area > h2 */
 .sucursal-card {
-    background: var(--color-blanco);
-    border: 1px solid var(--color-gris-claro-bordes);
+    background: var(--color-blanco); 
+    border: 1px solid var(--color-gris-claro-bordes); 
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.07); /* Sombra un poco más suave */
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    gap: 20px;
+    align-items: center; 
+    gap: 20px; 
 }
 
 .sucursal-info {
-    flex: 1;
+    flex: 1; 
 }
 
-.sucursal-card h3 {
+.sucursal-card h3 { 
     margin-top: 0;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.75rem; 
     color: var(--color-marron-logo); /* Título de sucursal en marrón */
 }
 
 .sucursal-map-container {
-    flex-shrink: 0;
+    flex-shrink: 0; 
 }
 
 .mapa-miniatura {
@@ -439,8 +515,8 @@ footer {
     height: 100px;
     border-radius: 4px;
     border: 1px solid var(--color-gris-claro-bordes);
-    object-fit: cover;
-    display: block;
+    object-fit: cover; 
+    display: block; 
 }
 .mapa-miniatura:hover {
     opacity: 0.85;
@@ -452,7 +528,7 @@ footer {
 /* .catalogo-list > h2 ya está cubierto por la regla general de .content-area > h2 */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); 
     gap: 25px;
 }
 
@@ -461,11 +537,11 @@ footer {
     border: 1px solid var(--color-gris-claro-bordes);
     border-radius: 8px;
     padding: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.07);
-    display: flex;
-    flex-direction: row;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.07); 
+    display: flex; 
+    flex-direction: row; 
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    min-height: 180px;
+    min-height: 180px; 
 }
 .product-card:hover {
     transform: translateY(-5px);
@@ -473,7 +549,7 @@ footer {
 }
 
 .product-card-image-container {
-    flex: 0 0 150px;
+    flex: 0 0 150px; 
     height: 150px; /* Altura fija para el contenedor de la imagen en escritorio, para hacerlo cuadrado con el ancho */
     margin-right: 15px;
     display: flex;
@@ -492,31 +568,31 @@ footer {
 }
 
 .product-card-content {
-    flex: 1;
+    flex: 1; 
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    text-align: left;
+    flex-direction: column; 
+    justify-content: space-between; 
+    text-align: left; 
 }
 
 .product-card-content h3 {
     font-size: 1.2rem;
-    margin: 0 0 10px 0;
-    color: var(--color-marron-logo);
+    margin: 0 0 10px 0; 
+    color: var(--color-marron-logo); 
 }
-.product-card-content h3 a {
+.product-card-content h3 a { 
     text-decoration: none;
     color: inherit;
 }
 .product-card-content h3 a:hover {
-    color: var(--color-amarillo-logo);
+    color: var(--color-amarillo-logo); 
 }
 
 
 /* Estilos para product-info y product-status para layout horizontal */
 .product-info {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; 
     align-items: center;
     margin: 5px 0 10px 0; /* Ajustar márgenes */
     gap: 10px;
@@ -524,15 +600,15 @@ footer {
 
 .product-price, .product-initial {
     font-weight: bold;
-    margin: 0;
-    font-size: 1rem;
+    margin: 0; 
+    font-size: 1rem; 
 }
-.product-price {
-    color: #28a745;
+.product-price { 
+    color: #28a745; 
 }
-.product-initial {
-    color: #17a2b8;
-    text-align: right;
+.product-initial { 
+    color: #17a2b8; 
+    text-align: right; 
 }
 
 .product-status {
@@ -545,16 +621,16 @@ footer {
 .availability-general {
     font-weight: bold;
     font-size: 0.90rem; /* Ligeramente más pequeño para el nuevo layout */
-    padding: 4px 8px;
-    border-radius: 15px;
-    color: #fff;
+    padding: 4px 8px; 
+    border-radius: 15px; 
+    color: #fff; 
     white-space: nowrap; /* Evitar que se rompa en dos líneas si es posible */
 }
 
-.available {
+.available { 
     background-color: #28a745; /* Verde */
 }
-.unavailable {
+.unavailable { 
     background-color: #dc3545; /* Rojo */
 }
 
@@ -572,12 +648,12 @@ footer {
 /* Carrusel de Destacados en Página de Inicio */
 .carousel-destacados {
     margin-top: 40px;
-    margin-bottom: 30px;
+    margin-bottom: 30px; 
     width: 100%; /* Para que ocupe el ancho de .content-area */
-    box-sizing: border-box;
+    box-sizing: border-box; 
     /* No debe tener overflow:hidden aquí, el scroll es en .carousel-items-container */
 }
-.carousel-destacados > h2 {
+.carousel-destacados > h2 { 
     color: var(--color-marron-logo);
     margin-bottom: 25px;
     font-size: 1.8rem; /* Podría heredar de .content-area > h2, pero lo especificamos */
@@ -604,7 +680,7 @@ footer {
     overflow-x: hidden; /* Prevenir desbordamiento horizontal causado por Tiny Slider */
     padding: 0 !important; /* Asegurar que no haya padding que interfiera con cálculos de TinySlider */
     /* Considerar añadir un pequeño padding negativo en los lados si el gutter del slider crea un espacio no deseado
-       ej. margin-left: -<gutter/2>px; margin-right: -<gutter/2>px;
+       ej. margin-left: -<gutter/2>px; margin-right: -<gutter/2>px; 
        Pero esto solo si es estrictamente necesario y después de probar.
     */
     /* Los siguientes estilos .tns-outer, .tns-viewport, .tns-slider, .tns-item son para cuando TinySlider está activo.
@@ -627,13 +703,13 @@ footer {
 
 
 /* Ajustes para .carousel-items (el container original de los items, que se pasa a TinySlider) */
-.carousel-items {
+/* .carousel-items { */
     /* Cuando TinySlider está activo, muchos de estos estilos son controlados por el slider.
        Para el modo de diagnóstico con scroll manual (TinySlider desactivado): */
     /* display: flex;  */ /* TinySlider lo maneja */
     /* width: max-content; */ /* TinySlider lo maneja */
     /* gap: 10px; */ /* TinySlider lo maneja con 'gutter' */
-}
+/* }*/
 
 .carousel-item { /* Nuestra clase para cada item del carrusel */
     /* width: 270px; */ /* ELIMINADO: Dejar que Tiny Slider controle el ancho del item basado en su configuración 'items' y 'gutter' */
@@ -657,7 +733,7 @@ footer {
 
 .carousel-item img {
     width: 100%;
-    height: 180px;
+    height: 180px; 
     object-fit: contain; /* CAMBIO: Asegura que toda la imagen sea visible */
     display: block;
     transition: transform 0.3s ease-in-out;
@@ -666,7 +742,11 @@ footer {
     transform: scale(1.08); /* Efecto de zoom un poco más pronunciado */
 }
 
+/* Reemplaza esto en la sección del carrusel */
 .carousel-item-label {
+    display: none; /* Añade esta línea para ocultar el texto */
+    position: absolute;
+    /* ...el resto de los estilos pueden quedar o los puedes borrar... */
     position: absolute;
     top: 50%;
     left: 50%;
@@ -693,14 +773,13 @@ footer {
     font-size: 1.1rem;
     font-weight: bold;
     color: var(--color-texto-sobre-amarillo);
-    text-shadow: none;
+    text-shadow: none; /* Importante para quitar la sombra anterior */
     transition: color 0.3s ease;
 }
 
 .carousel-item:hover .carousel-item-label h3 {
     color: var(--color-texto-sobre-marron);
 }
-
 
 /* Detalles del Producto (producto_detalle.html) */
 .product-detail-image-gallery { /* Contenedor para imagen principal y miniaturas */
@@ -713,7 +792,7 @@ footer {
 
 .main-image-container {
     text-align: center;
-    overflow: hidden;
+    overflow: hidden; 
     border: 1px solid var(--color-gris-claro-bordes);
     border-radius: 4px;
     padding: 10px; /* Un poco de espacio interno */
@@ -762,9 +841,9 @@ footer {
 
 
 /* Los estilos para .availability-general definidos arriba también aplicarán aquí */
-.product-detail-card {
+/* .product-detail-card { */
     /* .content-area ya da el fondo y padding inicial */
-}
+/* } */ 
 .product-detail-content {
     display: flex;
     flex-wrap: wrap;
@@ -775,9 +854,9 @@ footer {
 
 /* Ajustes para .product-detail-image img (si aún existe o para #main-product-image-display) */
 /* .product-detail-image img se refiere al antiguo contenedor, ahora es #main-product-image-display */
-#main-product-image-display {
+#main-product-image-display { 
     max-width: 100%;
-    max-height: 380px;
+    max-height: 380px; 
     object-fit: contain;
     border-radius: 4px;
     border: 1px solid #eee;
@@ -801,6 +880,25 @@ footer {
     margin-bottom: 10px;
     color: #343a40;
 }
+.product-detail-info .availability-general {
+    display: inline-block; /* ESTA es la clave para el indicador de disponibilidad */
+    width: auto;           /* Permite que el ancho se ajuste al texto */
+    padding: 6px 12px;     /* Ajusta el espaciado interno para que no sea tan grande */
+    margin-top: 10px;      /* Espacio por encima */
+}
+.product-detail-actions {
+    display: flex;         /* Usa flexbox para alinear los botones */
+    flex-wrap: wrap;       /* Permite que los botones pasen a la siguiente línea si no caben */
+    gap: 15px;             /* Espacio entre los botones */
+    justify-content: flex-start; /* Alinea los botones al inicio del contenedor */
+    margin-top: 25px;
+}
+
+.product-detail-actions .btn {
+    width: auto;      /* ESTA es la clave para los botones */
+    flex-grow: 0;     /* Evita que los botones crezcan para ocupar espacio extra */
+}
+
 .availability-list-detail { list-style: none; padding-left: 0; }
 .availability-list-detail li { margin-bottom: 8px; font-size: 1rem; }
 .btn-back {
@@ -1024,24 +1122,24 @@ textarea.form-control {
         top: 0;
         width: 280px; /* Ancho del menú desplegable */
         height: 100%;
-        background-color: #ffffff;
-        z-index: 1030;
-        overflow-y: auto;
+        background-color: #ffffff; 
+        z-index: 1030; 
+        overflow-y: auto; 
         box-shadow: 3px 0px 10px rgba(0,0,0,0.2);
-        transform: translateX(-100%);
+        transform: translateX(-100%); 
         transition: transform 0.3s ease-in-out;
-        padding-top: 20px;
+        padding-top: 20px; 
     }
     .categorias-sidebar.is-active {
-        transform: translateX(0);
+        transform: translateX(0); 
         /* z-index: 1030; Ya está definido arriba y es position:fixed, compite globalmente */
     }
 
     /* Estilos para el menú de navegación principal en móviles */
     #main-navigation.main-nav-open {
-        display: block !important;
+        display: block !important; 
         position: absolute;
-        top: 100%;
+        top: 100%; 
         left: 0;
         right: 0;
         background-color: var(--color-blanco);
@@ -1073,7 +1171,7 @@ textarea.form-control {
 
 
     /* Overlay para el fondo cuando CUALQUIER menú está abierto */
-    body.sidebar-is-active .main-content-overlay {
+    body.sidebar-is-active .main-content-overlay { 
         display: block;
         position: fixed;
         top: 0;
@@ -1081,9 +1179,9 @@ textarea.form-control {
         width: 100%;
         height: 100%;
         background-color: rgba(0,0,0,0.5);
-        z-index: 1020;
+        z-index: 1020; 
     }
-    .main-content-overlay {
+    .main-content-overlay { 
         display: none;
     }
 
@@ -1103,8 +1201,24 @@ textarea.form-control {
         /* flex-direction: column; No necesariamente, el botón hamburguesa ya ayuda */
         /* text-align: center; No si el título y nav siguen en línea */
     }
+.sucursal-card {
+    flex-direction: column; /* Cambia la dirección a vertical */
+    align-items: center;    /* Centra los elementos */
+    text-align: center;     /* Centra el texto de la información */
+    }
+
+.sucursal-map-container {
+    width: 100%; /* El contenedor del mapa ocupa todo el ancho */
+    margin-top: 15px; /* Añade un espacio arriba del mapa */
+    }
+
+.sucursal-map-container iframe {
+    width: 100% !important; /* Asegura que el iframe se ajuste al 100% */
+    height: 250px; /* Ajusta la altura para móviles */
+    }
+
     header .main-nav { /* Ocultar la navegación principal en móviles, se podría hacer otro menú hamburguesa para ella */
-        display: none;
+        display: none; 
     }
     header h1 {
         text-align: center; /* Centrar el título si la nav principal se oculta */
@@ -1121,13 +1235,13 @@ textarea.form-control {
         width: 100%;    /* Ocupar el ancho completo de la tarjeta */
         height: 200px;  /* Altura fija para el área de la imagen en móvil */
         margin-right: 0;
-        margin-bottom: 15px;
+        margin-bottom: 15px; 
         overflow: hidden; /* Asegurar overflow hidden aquí también */
         display: flex; /* Para centrar la imagen si es más pequeña que el contenedor */
         align-items: center;
         justify-content: center;
     }
-    /* Ya no necesitamos una regla .product-image específica aquí si los estilos globales
+    /* Ya no necesitamos una regla .product-image específica aquí si los estilos globales 
        (max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;)
        funcionan bien con el contenedor de dimensiones fijas (width:100%, height:200px).
        El object-fit: contain; global debería ser suficiente. */
@@ -1156,15 +1270,15 @@ textarea.form-control {
     .hero h2 { font-size: 2.2rem; }
     .hero p { font-size: 1.1rem; }
     .hero-buttons .btn {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 10px;
-        width: 80%;
-        max-width: 320px;
+        display: block; 
+        margin-left: auto;  
+        margin-right: auto; 
+        margin-bottom: 10px; 
+        width: 80%; 
+        max-width: 320px; 
     }
     .hero-buttons .btn:last-child {
-        margin-bottom: 0;
+        margin-bottom: 0; 
     }
 
     .info-columnas { flex-direction: column; }
@@ -1186,8 +1300,8 @@ textarea.form-control {
     height: 100%;
     overflow: hidden; /* El scroll debe estar en el contenido del modal, no en el overlay */
     background-color: rgba(0,0,0,0.65); /* Un poco más claro */
-    justify-content: center;
-    align-items: center;
+    justify-content: center; 
+    align-items: center; 
 }
 .modal-overlay.active {
     display: flex; /* Usar flex para centrar el contenido */
@@ -1321,7 +1435,7 @@ textarea.form-control {
 /* Si quisiéramos tarjetas más pequeñas para las sugerencias: */
 /*
 .suggestions-grid .product-card {
-    min-height: 160px;
+    min-height: 160px; 
 }
 .suggestions-grid .product-card-image-container {
     height: 120px;
@@ -1338,7 +1452,7 @@ textarea.form-control {
 
 @media (max-width: 480px) { /* Estilos específicos para móviles muy pequeños */
     .hero h2 {
-        font-size: 1.8rem;
+        font-size: 1.8rem; 
     }
     .hero p {
         font-size: 1rem;
@@ -1349,25 +1463,25 @@ textarea.form-control {
     }
 
     .content-area > h2,
-    .carousel-destacados > h2 {
+    .carousel-destacados > h2 { 
         font-size: 1.5rem;
     }
 
     .product-card-image-container { /* Reducir más la altura en móviles muy pequeños */
         height: 160px;
     }
-    /* .carousel-item img se ajustará al height de su contenedor .product-card-image-container
-       si este estilo se aplica también a las tarjetas de producto del catálogo,
+    /* .carousel-item img se ajustará al height de su contenedor .product-card-image-container 
+       si este estilo se aplica también a las tarjetas de producto del catálogo, 
        lo cual es el caso ya que .product-card-image-container es la clase usada.
        Si el carrusel usa una clase diferente para su contenedor de imagen, necesitaríamos una regla específica.
        Asumiendo que el carrusel también usa .product-card-image-container para sus items visualmente similares.
        Si no, necesitaríamos:
     */
     .carousel-item img { /* Específico para carrusel si usa su propia estructura */
-        height: 140px;
+        height: 140px; 
     }
     .carousel-item-label {
-        padding: 8px 10px;
+        padding: 8px 10px; 
     }
     .carousel-item-label h3 {
         font-size: 0.85rem; /* Reducir tamaño de fuente de la etiqueta del carrusel */

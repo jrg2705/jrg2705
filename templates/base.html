@@ -3,29 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Electro Hogar{% endblock %} - Tienda de Electrodomésticos</title>
+    <title>{% block title %}Jabel Muebles{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/tiny-slider.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <header>
         <div class="nav-container">
-            <button type="button" id="btn-toggle-categorias" class="btn-hamburguesa" aria-label="Toggle categorias navigation" aria-expanded="false" aria-controls="categorias-sidebar-nav">
-                &#9776; {# Símbolo de hamburguesa HTML #}
+            <button type="button" id="btn-toggle-categorias" class="btn-hamburguesa" aria-label="Toggle navigation" aria-expanded="false">
+                &#9776;
             </button>
             <h1>
-                <a href="{{ url_for('inicio') }}">
-                    <img src="{{ url_for('static', filename='img/logo_placeholder.png') }}" alt="Logo Electro Hogar" class="header-logo">
-                    Electro Hogar
-                </a>
-            </h1>
-            <nav class="main-nav" id="main-navigation"> {# Añadido ID aquí #}
+    <a href="{{ url_for('inicio') }}" style="display: flex; align-items: center; text-decoration: none;">
+        <img src="{{ url_for('static', filename='img/log.png') }}" alt="Logo Jabel Muebles" style="height: 40px; margin-right: 10px;">
+        Jabel Muebles
+    </a>
+</h1>
+            <nav class="main-nav" id="main-navigation">
                 <ul>
                     <li><a href="{{ url_for('inicio') }}">Inicio</a></li>
-                    <li><a href="{{ url_for('mostrar_sucursales') }}">Sucursales</a></li>
                     <li><a href="{{ url_for('catalogo_general') }}">Catálogo</a></li>
+                    <li><a href="{{ url_for('mostrar_sucursales') }}">Sucursales</a></li>
                     <li><a href="{{ url_for('contacto') }}">Contacto</a></li>
-                    <li><a href="{{ url_for('solicitud_credito') }}" class="btn btn-primary">Solicitar Crédito</a></li>
+                    <li><a href="{{ url_for('solicitud_credito') }}" class="btn btn-primary">Solicita tu Crédito</a></li>
                 </ul>
             </nav>
         </div>
@@ -35,24 +36,27 @@
             {% include '_categorias_nav.html' %}
         {% endblock %}
         <main class="content-area">
-            {% block content_header %}
-                {# Espacio para breadcrumbs o títulos específicos de la página de contenido #}
-            {% endblock %}
-            {% block content %}
-            {% endblock %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flashes">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            {% block content_header %}{% endblock %}
+            {% block content %}{% endblock %}
         </main>
     </div>
     <footer>
-        <p>&copy; {{ current_year }} Electro Hogar - Todos los derechos reservados.</p>
+        <p>&copy; {{ current_year }} Jabel Muebles - Todos los derechos reservados.</p>
     </footer>
-    <div class="main-content-overlay"></div> {# Para el cierre del menú móvil #}
-
-    <!-- Modal para Imagen Ampliada -->
-    <div id="image-modal" class="image-modal-overlay">
+    <div class="main-content-overlay"></div>
+    <div id="image-modal" class="modal-overlay">
         <span class="image-modal-close" title="Cerrar">&times;</span>
-        <img class="image-modal-content" id="modal-image-src" src="#" alt="Imagen Ampliada">
+        <img class="image-modal-content" id="modal-image-src" src="" alt="Imagen Ampliada">
     </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tiny-slider/2.9.4/min/tiny-slider.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </body>

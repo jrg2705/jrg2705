@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}{{ titulo_catalogo|default("Catálogo") }} - Electro Hogar{% endblock %}
+{% block title %}{{ titulo_catalogo or "Catálogo" }}{% endblock %}
 
 {% block content_header %}
     <div class="breadcrumbs-container">
-        <a href="{{ url_for('inicio') }}">Inicio</a> &raquo;
+        <a href="{{ url_for('inicio') }}">Inicio</a> &raquo; 
         <a href="{{ url_for('catalogo_general') }}">Catálogo</a>
         {% if breadcrumbs %}
             {% for crumb in breadcrumbs %}
-                &raquo;
+                &raquo; 
                 {% if crumb.url %}
                     <a href="{{ crumb.url }}">{{ crumb.nombre }}</a>
                 {% else %}
@@ -17,7 +17,7 @@
             {% endfor %}
         {% endif %}
     </div>
-    <h2>{{ titulo_catalogo|default("Catálogo de Productos") }}</h2>
+    <h2>{{ titulo_catalogo }}</h2>
 {% endblock %}
 
 {% block content %}
@@ -27,28 +27,30 @@
             {% for producto in productos %}
             <article class="product-card">
                 <div class="product-card-image-container">
-                    <a href="{{ url_for('detalle_producto', producto_id=producto.id) }}" class="product-card-link-img">
-                        {% if producto.imagen_url %}
-                            <img src="{{ producto.imagen_url }}" alt="Imagen de {{ producto.nombre }}" class="product-image">
-                        {% else %}
-                            <img src="https://via.placeholder.com/300x200.png?text={{ producto.nombre|urlencode }}" alt="Imagen de {{ producto.nombre }}" class="product-image">
-                        {% endif %}
+                    <a href="{{ url_for('detalle_producto', producto_id=producto.id) }}">
+                        <img src="{{ producto.imagen_url or 'https://via.placeholder.com/300x200.png?text=' + producto.nombre|urlencode }}" alt="Imagen de {{ producto.nombre }}" class="product-image">
                     </a>
                 </div>
                 <div class="product-card-content">
                     <h3><a href="{{ url_for('detalle_producto', producto_id=producto.id) }}">{{ producto.nombre }}</a></h3>
                     <div class="product-info">
                         <p class="product-price">Precio: {{ producto.precio|format_rd }}</p>
+                        {% if producto.aplica_financiamiento %}
+                        <p class="initial-payment"><strong>Inicial desde:</strong> {{ producto.precio|inicial_rd }}</p>
+                        {% endif %}
                     </div>
                     <div class="product-status">
-                        <a href="{{ url_for('detalle_producto', producto_id=producto.id) }}" class="btn-details">Ver Detalles</a>
+                        <span class="availability-general {% if producto.disponible %}available{% else %}unavailable{% endif %}">
+                            {% if producto.disponible %}Disponible{% else %}Agotado{% endif %}
+                        </span>
+                        <a href="{{ url_for('detalle_producto', producto_id=producto.id) }}" class="btn btn-details">Ver Detalles</a>
                     </div>
                 </div>
             </article>
             {% endfor %}
         </div>
     {% else %}
-        <p>No hay productos disponibles para esta categoría o criterios de búsqueda.</p>
+        <p>No hay productos disponibles para esta categoría.</p>
     {% endif %}
 </section>
 {% endblock %}

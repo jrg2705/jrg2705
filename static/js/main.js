@@ -12,98 +12,110 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function openMenu(menuElement) {
-        if (menuElement) menuElement.classList.add('is-active'); // Para sidebar
-        if (menuElement === mainNavigation && mainNavigation) mainNavigation.classList.add('main-nav-open'); // Para main-nav
-
-        if (document.body) document.body.classList.add('sidebar-is-active'); // Usamos la misma clase para el overlay
+        if (!menuElement) return;
+        if (menuElement.id === 'categorias-sidebar-nav') {
+            menuElement.classList.add('is-active');
+        } else if (menuElement.id === 'main-navigation') {
+            menuElement.classList.add('main-nav-open');
+        }
+        document.body.classList.add('sidebar-is-active');
         updateToggleButton(true);
     }
 
     function closeAllMenus() {
         if (categoriasSidebar) categoriasSidebar.classList.remove('is-active');
         if (mainNavigation) mainNavigation.classList.remove('main-nav-open');
-
-        if (document.body) document.body.classList.remove('sidebar-is-active');
+        document.body.classList.remove('sidebar-is-active');
         updateToggleButton(false);
     }
 
     if (toggleButton) {
-        toggleButton.addEventListener('click', function() {
+        toggleButton.addEventListener('click', function(e) {
+            e.stopPropagation();
             const isHomePage = window.location.pathname === '/';
+            const targetMenu = isHomePage ? mainNavigation : categoriasSidebar;
+            const isOpen = targetMenu.classList.contains('is-active') || targetMenu.classList.contains('main-nav-open');
 
-            if (isHomePage && mainNavigation) {
-                const isMainMenuOpen = mainNavigation.classList.contains('main-nav-open');
-                if (isMainMenuOpen) {
-                    closeAllMenus();
-                } else {
-                    closeAllMenus(); // Cerrar cualquier otro menú primero
-                    openMenu(mainNavigation);
-                    if (toggleButton) toggleButton.setAttribute('aria-controls', 'main-navigation');
-                }
-            } else if (categoriasSidebar) {
-                const isSidebarOpen = categoriasSidebar.classList.contains('is-active');
-                if (isSidebarOpen) {
-                    closeAllMenus();
-                } else {
-                    closeAllMenus(); // Cerrar cualquier otro menú primero
-                    openMenu(categoriasSidebar);
-                    if (toggleButton) toggleButton.setAttribute('aria-controls', 'categorias-sidebar-nav');
-                }
+            if (isOpen) {
+                closeAllMenus();
+            } else {
+                closeAllMenus(); // Cierra cualquier otro menú abierto
+                openMenu(targetMenu);
             }
         });
     }
 
-    // --- Lógica para el Modal de Imagen Ampliada y Galería de Miniaturas ---
-    const mainProductImageDisplay = document.getElementById('main-product-image-display'); // Actualizado ID
+    if (mainContentOverlay) {
+        mainContentOverlay.addEventListener('click', closeAllMenus);
+    }
+
+   // --- Lógica para el Acordeón de Categorías (Versión Simple Refinada) ---
+const categoryLinks = document.querySelectorAll('.categorias-sidebar .has-submenu > .cat-principal-link');
+
+categoryLinks.forEach(link => {
+    link.addEventListener('click', function(event) {
+        // Prevenir la navegación para que el clic solo abra/cierre el menú
+        event.preventDefault(); 
+
+        const parentLi = this.parentElement;
+        parentLi.classList.toggle('open');
+
+        // --- AÑADIDO: Lógica para cambiar el ícono ---
+        const toggleIcon = this.querySelector('.submenu-toggle');
+        if (toggleIcon) {
+            if (parentLi.classList.contains('open')) {
+                toggleIcon.textContent = '−'; // Signo de menos cuando está abierto
+            } else {
+                toggleIcon.textContent = '+'; // Signo de más cuando está cerrado
+            }
+        }
+        // --- FIN DEL AÑADIDO ---
+    });
+});
+
+    // --- Lógica para el Modal de Imagen Ampliada ---
+    const mainProductImageDisplay = document.getElementById('main-product-image-display');
     const imageModal = document.getElementById('image-modal');
     const modalImageSrc = document.getElementById('modal-image-src');
     const closeModalButton = imageModal ? imageModal.querySelector('.image-modal-close') : null;
-    const thumbnailImages = document.querySelectorAll('.thumbnail-image');
 
-    // Funcionalidad del Modal (Zoom)
     if (mainProductImageDisplay && imageModal && modalImageSrc && closeModalButton) {
         mainProductImageDisplay.addEventListener('click', function() {
-            if (this.src && this.src.indexOf('via.placeholder.com') === -1) {
-                imageModal.style.display = "flex";
-                modalImageSrc.src = this.src; // Usar el src de la imagen principal actual
+            if (this.src && !this.src.includes('via.placeholder.com')) {
+                modalImageSrc.src = this.src;
+                imageModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
         });
 
-        closeModalButton.addEventListener('click', function() {
-            imageModal.style.display = "none";
+        const closeImageModal = () => {
+            imageModal.classList.remove('active');
             document.body.style.overflow = 'auto';
-        });
+            setTimeout(() => { modalImageSrc.src = ""; }, 300);
+        };
 
-        imageModal.addEventListener('click', function(event) {
-            if (event.target === imageModal) { // Si se hace clic en el fondo del modal
-                imageModal.style.display = "none";
-                document.body.style.overflow = 'auto';
-            }
+        closeModalButton.addEventListener('click', closeImageModal);
+        imageModal.addEventListener('click', (event) => {
+            if (event.target === imageModal) closeImageModal();
         });
     }
 
-    // Funcionalidad de la Galería de Miniaturas
+    // --- Lógica de la Galería de Miniaturas ---
+    const thumbnailImages = document.querySelectorAll('.thumbnail-image');
     if (mainProductImageDisplay && thumbnailImages.length > 0) {
-        thumbnailImages.forEach(thumbnail => {
-            thumbnail.addEventListener('click', function() {
-                // Cambiar imagen principal
+        thumbnailImages.forEach(thumb => {
+            thumb.addEventListener('click', function() {
                 mainProductImageDisplay.src = this.dataset.fullimageUrl;
-                mainProductImageDisplay.alt = this.alt; // Actualizar alt text
-
-                // Actualizar miniatura activa
                 thumbnailImages.forEach(img => img.classList.remove('active-thumbnail'));
                 this.classList.add('active-thumbnail');
             });
         });
     }
-    // FIN Lógica para el Modal de Imagen Ampliada y Galería
-
 
     // --- Lógica para el Modal de Términos y Condiciones ---
     const openTermsModalLink = document.getElementById('open-terms-modal-link');
     const termsConditionsModal = document.getElementById('terms-conditions-modal');
-    const closeTermsModalButton = document.getElementById('close-terms-modal-button');
+    const closeTermsModalButton = termsConditionsModal ? termsConditionsModal.querySelector('.modal-close-terms') : null;
     const acceptTermsFromModalButton = document.getElementById('accept-terms-from-modal');
     const aceptaTerminosCheckbox = document.getElementById('acepta_terminos');
 
@@ -114,79 +126,56 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.style.overflow = 'hidden';
         });
 
-        function closeTermsModal() {
+        const closeTermsModal = () => {
             termsConditionsModal.classList.remove('active');
             document.body.style.overflow = 'auto';
-        }
+        };
 
         closeTermsModalButton.addEventListener('click', closeTermsModal);
-
-        acceptTermsFromModalButton.addEventListener('click', function() {
+        acceptTermsFromModalButton.addEventListener('click', () => {
             aceptaTerminosCheckbox.checked = true;
             closeTermsModal();
         });
+        termsConditionsModal.addEventListener('click', (event) => {
+            if (event.target === termsConditionsModal) closeTermsModal();
+        });
+    }
 
-        termsConditionsModal.addEventListener('click', function(event) {
-            if (event.target === termsConditionsModal) {
-                closeTermsModal();
+    // --- Lógica para el campo de WhatsApp en el formulario de crédito ---
+    const tieneWhatsappCheckbox = document.getElementById('tiene_whatsapp');
+    const whatsappOtroGroup = document.getElementById('whatsapp_otro_group');
+    if (tieneWhatsappCheckbox && whatsappOtroGroup) {
+        const whatsappOtroInput = document.getElementById('whatsapp_otro');
+        function toggleWhatsappOtro() {
+            if (tieneWhatsappCheckbox.checked) {
+                whatsappOtroGroup.style.display = 'none';
+                if(whatsappOtroInput) whatsappOtroInput.value = '';
+            } else {
+                whatsappOtroGroup.style.display = 'block';
             }
-        });
-    }
-    // FIN Lógica Modal Términos y Condiciones
-
-
-    if (mainContentOverlay) {
-        mainContentOverlay.addEventListener('click', function() {
-            closeAllMenus();
-        });
+        }
+        toggleWhatsappOtro();
+        tieneWhatsappCheckbox.addEventListener('change', toggleWhatsappOtro);
     }
 
-    // Opcional: Cerrar el menú si se hace clic en un enlace dentro de él
-    // Esto es más relevante para SPAs. Si los enlaces recargan la página, el menú se cerrará.
-    // if (categoriasSidebar) {
-    //     categoriasSidebar.addEventListener('click', function(event) {
-    //         if (event.target.tagName === 'A' && categoriasSidebar.classList.contains('is-active')) {
-    //             closeAllMenus();
-    //         }
-    //     });
-    // }
-    // if (mainNavigation) {
-    //     mainNavigation.addEventListener('click', function(event) {
-    //         if (event.target.tagName === 'A' && mainNavigation.classList.contains('main-nav-open')) {
-    //             closeAllMenus();
-    //         }
-    //     });
-    // }
-
-    // }
-
-    // Inicializar Tiny Slider para el carrusel de destacados
+    // --- Inicializar Tiny Slider ---
     const carouselContainer = document.querySelector('.carousel-items');
     if (carouselContainer) {
-        var slider = tns({
+        tns({
             container: '.carousel-items',
-            items: 1, // Items base para móviles
+            items: 1,
             slideBy: 'page',
             autoplay: true,
             autoplayButtonOutput: false,
             mouseDrag: true,
-            controls: false,
-            nav: false,
-            autoplayTimeout: 5000, // Ajustado para movimiento más lento
+            controls: false, 
+            nav: false,      
+            autoplayTimeout: 5000,
             gutter: 0,
             responsive: {
-                600: {
-                    items: 2,
-                    gutter: 10
-                },
-                900: { // A partir de 900px
-                    items: 3,
-                    gutter: 15
-                },
-                1200: { // A partir de 1200px
-                    items: 4,
-                    gutter: 20
-                }
+                600: { items: 2, gutter: 10 },
+                900: { items: 3, gutter: 15 },
+                1200: { items: 4, gutter: 20 }
             }
         });
     }
