@@ -15,3 +15,5 @@ MarkupSafe==2.1.5
 click==8.1.7
 greenlet==3.0.3
 blinker==1.8.2
+Flask-Migrate==4.0.5
+psycopg2-binary==2.9.9

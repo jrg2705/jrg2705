@@ -15,18 +15,20 @@ from wtforms.validators import DataRequired, Email, Length, Optional, Regexp
 import uuid
 from werkzeug.utils import secure_filename
 from flask_admin.form.upload import ImageUploadField
+from flask_migrate import Migrate
 
 # --- 1. CONFIGURACIÓN DE LA APP ---
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'una-clave-secreta-muy-dificil-de-adivinar'
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'tienda.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///' + os.path.join(basedir, 'tienda.db'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join(basedir, 'static', 'img', 'uploads')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # --- 2. INICIALIZACIÓN DE EXTENSIONES ---
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
