@@ -112,11 +112,13 @@ class MyAdminIndexView(AdminIndexView):
         return self.render('admin/index.html', stats=stats)
 class ImagenProductoAdminView(MyModelView):
     def _list_thumbnail(view, context, model, name):
-        if not model.url:
-            return ''
-        # Construye la ruta relativa para url_for
-        file_path = os.path.join('img/uploads', model.url)
-        return f'<img src="{url_for("static", filename=file_path)}" width="100">'
+        try:
+            if not model.url:
+                return ''
+            file_path = os.path.join('img/uploads', model.url)
+            return f'<img src="{url_for("static", filename=file_path)}" width="100">'
+        except Exception as e:
+            return f"<small>Error cargando imagen: {e}</small>"
 
     column_formatters = {
         'url': _list_thumbnail
