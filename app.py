@@ -111,12 +111,20 @@ class MyAdminIndexView(AdminIndexView):
         stats = {'productos': Producto.query.count(),'categorias': Categoria.query.count(),'sucursales': Sucursal.query.count(),'usuarios': User.query.count()}
         return self.render('admin/index.html', stats=stats)
 class ImagenProductoAdminView(MyModelView):
+    # def _list_thumbnail(view, context, model, name):
+    #     try:
+    #         if not model.url:
+    #             return ''
+    #         file_path = os.path.join('img/uploads', model.url)
+    #         return f'<img src="{url_for("static", filename=file_path)}" width="100">'
+    #     except Exception as e:
+    #         return f"<small>Error cargando imagen: {e}</small>"
     def _list_thumbnail(view, context, model, name):
         try:
             if not model.url:
                 return ''
-            file_path = os.path.join('img/uploads', model.url)
-            return f'<img src="{url_for("static", filename=file_path)}" width="100">'
+            # Usa ruta absoluta relativa a /static para evitar errores con url_for en admin
+            return f'<img src="/static/img/uploads/{model.url}" width="100">'
         except Exception as e:
             return f"<small>Error cargando imagen: {e}</small>"
 
