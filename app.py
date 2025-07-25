@@ -111,19 +111,10 @@ class MyAdminIndexView(AdminIndexView):
         stats = {'productos': Producto.query.count(),'categorias': Categoria.query.count(),'sucursales': Sucursal.query.count(),'usuarios': User.query.count()}
         return self.render('admin/index.html', stats=stats)
 class ImagenProductoAdminView(MyModelView):
-    # def _list_thumbnail(view, context, model, name):
-    #     try:
-    #         if not model.url:
-    #             return ''
-    #         file_path = os.path.join('img/uploads', model.url)
-    #         return f'<img src="{url_for("static", filename=file_path)}" width="100">'
-    #     except Exception as e:
-    #         return f"<small>Error cargando imagen: {e}</small>"
     def _list_thumbnail(view, context, model, name):
         try:
             if not model.url:
                 return ''
-            # Usa ruta absoluta relativa a /static para evitar errores con url_for en admin
             return f'<img src="/static/img/uploads/{model.url}" width="100">'
         except Exception as e:
             return f"<small>Error cargando imagen: {e}</small>"
@@ -131,6 +122,35 @@ class ImagenProductoAdminView(MyModelView):
     column_formatters = {
         'url': _list_thumbnail
     }
+
+    form_extra_fields = {
+        'url': ImageUploadField(
+            'Seleccionar Imagen',
+            base_path=os.path.join(os.path.dirname(__file__), 'static', 'img', 'uploads'),
+            url_relative_path='img/uploads/',
+            namegen=lambda obj, file_data: f"{uuid.uuid4().hex[:10]}-{secure_filename(file_data.filename)}"
+        )
+    }
+    # # def _list_thumbnail(view, context, model, name):
+    # #     try:
+    # #         if not model.url:
+    # #             return ''
+    # #         file_path = os.path.join('img/uploads', model.url)
+    # #         return f'<img src="{url_for("static", filename=file_path)}" width="100">'
+    # #     except Exception as e:
+    # #         return f"<small>Error cargando imagen: {e}</small>"
+    # def _list_thumbnail(view, context, model, name):
+    #     try:
+    #         if not model.url:
+    #             return ''
+    #         # Usa ruta absoluta relativa a /static para evitar errores con url_for en admin
+    #         return f'<img src="/static/img/uploads/{model.url}" width="100">'
+    #     except Exception as e:
+    #         return f"<small>Error cargando imagen: {e}</small>"
+
+    # column_formatters = {
+    #     'url': _list_thumbnail
+    # }
 
     # Esto convierte el campo 'url' en un campo de subida de archivos
     form_extra_fields = {
