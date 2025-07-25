@@ -115,8 +115,10 @@ class ImagenProductoAdminView(MyModelView):
         try:
             if not model.url:
                 return ''
-            return f'<img src="/static/img/uploads/{model.url}" width="100">'
+            file_path = os.path.join('img/uploads', model.url)
+            return f'<img src="{url_for("static", filename=file_path)}" width="100">'
         except Exception as e:
+            print(f"Error cargando imagen: {e}")  # Esto lo imprime en consola/log
             return f"<small>Error cargando imagen: {e}</small>"
 
     column_formatters = {
@@ -126,8 +128,7 @@ class ImagenProductoAdminView(MyModelView):
     form_extra_fields = {
         'url': ImageUploadField(
             'Seleccionar Imagen',
-            base_path=os.path.join(os.path.dirname(__file__), 'static', 'img', 'uploads'),
-            url_relative_path='img/uploads/',
+            base_path=app.config['UPLOAD_FOLDER'],
             namegen=lambda obj, file_data: f"{uuid.uuid4().hex[:10]}-{secure_filename(file_data.filename)}"
         )
     }
