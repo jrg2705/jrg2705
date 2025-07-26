@@ -4,6 +4,7 @@ import datetime
 import math
 import cloudinary
 import cloudinary.uploader
+from markupsafe import Markup
 from flask import Flask, render_template, abort, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
@@ -141,9 +142,9 @@ class ImagenProductoAdminView(MyModelView):
         try:
             if not model.url:
                 return ''
-            return f'<img src="{model.url}" width="100">'
+            return Markup(f'<img src="{model.url}" width="100">')  # 👈 ENVUELTO EN Markup
         except Exception as e:
-            return f"<small>Error cargando imagen: {e}</small>"
+            return Markup(f"<small>Error cargando imagen: {e}</small>")
 
     column_formatters = {
         'url': _list_thumbnail
