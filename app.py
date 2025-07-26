@@ -127,13 +127,13 @@ class ImagenProductoAdminView(MyModelView):
         'file': FileField('Subir imagen', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Solo imágenes')])
     }
 
-    form_columns = ('file', 'producto')  # solo mostramos campo para subir imagen + producto
+    form_columns = ('file', 'producto')
 
     def on_model_change(self, form, model, is_created):
         if form.file.data:
             try:
                 upload_result = cloudinary.uploader.upload(form.file.data)
-                model.url = upload_result['secure_url']  # guardamos URL en el modelo
+                model.url = upload_result['secure_url']
             except Exception as e:
                 raise ValueError(f'Error al subir a Cloudinary: {e}')
 
