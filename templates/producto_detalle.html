@@ -31,25 +31,19 @@
                         <img id="main-product-image-display" 
                              src="{{ producto.imagen_url or 'https://via.placeholder.com/400x400.png?text=' + producto.nombre|urlencode }}" 
                              alt="Imagen principal de {{ producto.nombre }}" 
-                             style="cursor: pointer;">
+                             style="cursor: pointer; max-width: 100%; height: auto;">
                     </div>
                     
-                    {% if producto.imagenes_secundarias.count() > 0 %}
-                    <div class="thumbnail-gallery">
-                        <img class="thumbnail-image active-thumbnail"
-                             src="{{ producto.imagen_url or 'https://via.placeholder.com/80x80.png?text=N/A' }}" 
-                             data-fullimage-url="{{ producto.imagen_url or 'https://via.placeholder.com/400x400.png?text=N/A' }}"
-                             alt="Miniatura de {{ producto.nombre }}">
-                        
-                        {% set imagenes = producto.imagenes_secundarias.all() %}
-                            {% if imagenes %}
-                                <div class="imagenes-secundarias">
-                                   {% for img in imagenes %}
-                                        <img src="{{ img.url }}" alt="Imagen secundaria" width="150" style="margin: 5px;">
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                    </div>
+                    {% set imagenes = producto.imagenes_secundarias.all() %}
+                    {% if imagenes %}
+                        <div class="imagenes-secundarias">
+                            {% for img in imagenes %}
+                                <img class="thumbnail-image"
+                                     src="{{ img.url }}" 
+                                     alt="Imagen secundaria"
+                                     onclick="cambiarImagenPrincipal('{{ img.url }}')">
+                            {% endfor %}
+                        </div>
                     {% endif %}
                 </div>
                 
@@ -61,7 +55,6 @@
                     <p class="initial-payment"><strong>Inicial desde:</strong> {{ producto.precio|inicial_rd }}</p>
                     {% endif %}
                     
-                    <!-- <h3>Disponibilidad:</h3> -->
                     <p class="availability-general {% if producto.disponible %}available{% else %}unavailable{% endif %}">
                         {% if producto.disponible %}Disponible{% else %}Agotado{% endif %}
                     </p>
@@ -80,4 +73,40 @@
         <a href="{{ url_for('catalogo_general') }}" class="btn-back">Volver al Catálogo</a>
     {% endif %}
 </section>
+
+<!-- Estilos locales para miniaturas -->
+<style>
+    .imagenes-secundarias {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .imagenes-secundarias img.thumbnail-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .imagenes-secundarias img.thumbnail-image:hover {
+        transform: scale(1.05);
+        border-color: #007bff;
+    }
+</style>
+
+<!-- Script para cambiar imagen principal -->
+<script>
+    function cambiarImagenPrincipal(url) {
+        const imagen = document.getElementById('main-product-image-display');
+        if (imagen) {
+            imagen.src = url;
+        }
+    }
+</script>
+
 {% endblock %}
