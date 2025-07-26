@@ -2,6 +2,8 @@
 import os
 import datetime
 import math
+import cloudinary
+import cloudinary.uploader
 from flask import Flask, render_template, abort, redirect, url_for, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
@@ -10,12 +12,21 @@ from flask_admin.contrib.sqla import ModelView
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
 import babel.numbers
-from wtforms import StringField, SelectField, BooleanField, TextAreaField, SubmitField, TelField, PasswordField
+from wtforms import StringField, SelectField, BooleanField, TextAreaField, SubmitField, TelField, PasswordField, FileField
 from wtforms.validators import DataRequired, Email, Length, Optional, Regexp
 import uuid
 from werkzeug.utils import secure_filename
 from flask_admin.form.upload import ImageUploadField
 from flask_migrate import Migrate
+from flask_admin.form import BaseForm
+from flask_wtf.file import FileField, FileAllowed
+from wtforms.fields import HiddenField
+
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET')
+)
 
 # --- 1. CONFIGURACIÓN DE LA APP ---
 app = Flask(__name__)
@@ -110,27 +121,32 @@ class MyAdminIndexView(AdminIndexView):
     def index(self):
         stats = {'productos': Producto.query.count(),'categorias': Categoria.query.count(),'sucursales': Sucursal.query.count(),'usuarios': User.query.count()}
         return self.render('admin/index.html', stats=stats)
+    
 class ImagenProductoAdminView(MyModelView):
+    form_extra_fields = {
+        'file': FileField('Subir imagen', validators=[FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Solo imágenes')])
+    }
+
+    form_columns = ('file', 'producto')  # solo mostramos campo para subir imagen + producto
+
+    def on_model_change(self, form, model, is_created):
+        if form.file.data:
+            try:
+                upload_result = cloudinary.uploader.upload(form.file.data)
+                model.url = upload_result['secure_url']  # guardamos URL en el modelo
+            except Exception as e:
+                raise ValueError(f'Error al subir a Cloudinary: {e}')
+
     def _list_thumbnail(view, context, model, name):
         try:
             if not model.url:
                 return ''
-            file_path = os.path.join('img/uploads', model.url)
-            return f'<img src="{url_for("static", filename=file_path)}" width="100">'
+            return f'<img src="{model.url}" width="100">'
         except Exception as e:
-            print(f"Error cargando imagen: {e}")  # Esto lo imprime en consola/log
             return f"<small>Error cargando imagen: {e}</small>"
 
     column_formatters = {
         'url': _list_thumbnail
-    }
-
-    form_extra_fields = {
-        'url': ImageUploadField(
-            'Seleccionar Imagen',
-            base_path=app.config['UPLOAD_FOLDER'],
-            namegen=lambda obj, file_data: f"{uuid.uuid4().hex[:10]}-{secure_filename(file_data.filename)}"
-        )
     }
     # # def _list_thumbnail(view, context, model, name):
     # #     try:

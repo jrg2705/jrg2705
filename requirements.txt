@@ -17,3 +17,4 @@ greenlet==2.0.2
 blinker==1.8.2
 Flask-Migrate==4.0.5
 psycopg2-binary==2.9.9
+cloudinary==1.38.0
