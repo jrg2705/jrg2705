@@ -44,8 +44,7 @@
                         {% set imagenes = producto.imagenes_secundarias.all() %}
                             {% if imagenes %}
                                 <div class="imagenes-secundarias">
-                                    <p>Imágenes secundarias: {{ imagenes|length }}</p>
-                                    {% for img in imagenes %}
+                                   {% for img in imagenes %}
                                         <img src="{{ img.url }}" alt="Imagen secundaria" width="150" style="margin: 5px;">
                                     {% endfor %}
                                 </div>
