@@ -41,14 +41,15 @@
                              data-fullimage-url="{{ producto.imagen_url or 'https://via.placeholder.com/400x400.png?text=N/A' }}"
                              alt="Miniatura de {{ producto.nombre }}">
                         
-                        {% if producto.imagenes_secundarias %}
-                        <div class="imagenes-secundarias">
-                            <p>Imágenes secundarias: {{ producto.imagenes_secundarias|length }}</p>
-                            {% for img in producto.imagenes_secundarias %}
-                            <img src="{{ img.url }}" alt="Imagen secundaria" width="150" style="margin: 5px;">
-                            {% endfor %}
-                        </div>
-                        {% endif %}
+                        {% set imagenes = producto.imagenes_secundarias.all() %}
+                            {% if imagenes %}
+                                <div class="imagenes-secundarias">
+                                    <p>Imágenes secundarias: {{ imagenes|length }}</p>
+                                    {% for img in imagenes %}
+                                        <img src="{{ img.url }}" alt="Imagen secundaria" width="150" style="margin: 5px;">
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                     </div>
                     {% endif %}
                 </div>
