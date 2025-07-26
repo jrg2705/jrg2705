@@ -8,7 +8,7 @@
         <a href="{{ url_for('inicio') }}">Inicio</a> &raquo;
         <a href="{{ url_for('catalogo_general') }}">Catálogo</a>
         {% for crumb in breadcrumbs_producto %}
-            &raquo; 
+            &raquo;
             {% if crumb.url %}
                 <a href="{{ crumb.url }}">{{ crumb.nombre }}</a>
             {% else %}
@@ -24,51 +24,67 @@
     {% if producto %}
         <article class="product-detail-card">
             <h2>{{ producto.nombre }}</h2>
-            
+
             <div class="product-detail-content">
                 <div class="product-detail-image-gallery">
+                    <!-- Imagen principal -->
                     <div class="main-image-container">
-                        <img id="main-product-image-display" 
-                             src="{{ producto.imagen_url or 'https://via.placeholder.com/400x400.png?text=' + producto.nombre|urlencode }}" 
-                             alt="Imagen principal de {{ producto.nombre }}" 
-                             style="cursor: pointer; max-width: 100%; height: auto;">
+                        <img id="main-product-image-display"
+                             src="{{ producto.imagen_url or 'https://via.placeholder.com/400x400.png?text=' + producto.nombre|urlencode }}"
+                             alt="Imagen principal de {{ producto.nombre }}"
+                             style="cursor: pointer; max-width: 100%; max-height: 400px;">
                     </div>
-                    
-                    {% set imagenes = producto.imagenes_secundarias.all() %}
-                    {% if imagenes %}
-                        <div class="imagenes-secundarias">
-                            {% for img in imagenes %}
-                                <img class="thumbnail-image"
-                                    src="{{ img.url }}"
-                                    data-fullimage-url="{{ img.url }}"
-                                    alt="Imagen secundaria"
-                                    width="80"
-                                    style="margin: 5px; cursor: pointer;">
-                            {% endfor %}
-                        </div>
-                    {% endif %}
+
+                    <!-- Miniaturas -->
+                    <div class="thumbnail-gallery" style="margin-top: 10px; display: flex; flex-wrap: wrap;">
+                        <!-- Miniatura imagen principal -->
+                        {% if producto.imagen_url %}
+                            <img class="thumbnail-image active-thumbnail"
+                                 src="{{ producto.imagen_url }}"
+                                 data-fullimage-url="{{ producto.imagen_url }}"
+                                 alt="Imagen principal"
+                                 width="80"
+                                 style="margin: 5px; cursor: pointer;">
+                        {% endif %}
+
+                        <!-- Miniaturas de imágenes secundarias -->
+                        {% set imagenes = producto.imagenes_secundarias.all() %}
+                        {% for img in imagenes %}
+                            <img class="thumbnail-image"
+                                 src="{{ img.url }}"
+                                 data-fullimage-url="{{ img.url }}"
+                                 alt="Imagen secundaria"
+                                 width="80"
+                                 style="margin: 5px; cursor: pointer;">
+                        {% endfor %}
+                    </div>
                 </div>
-                
+
                 <div class="product-detail-info">
                     <p class="description">{{ producto.descripcion }}</p>
                     <p class="price"><strong>Precio:</strong> {{ producto.precio|format_rd }}</p>
-                    
+
                     {% if producto.aplica_financiamiento %}
-                    <p class="initial-payment"><strong>Inicial desde:</strong> {{ producto.precio|inicial_rd }}</p>
+                        <p class="initial-payment"><strong>Inicial desde:</strong> {{ producto.precio|inicial_rd }}</p>
                     {% endif %}
-                    
+
                     <p class="availability-general {% if producto.disponible %}available{% else %}unavailable{% endif %}">
                         {% if producto.disponible %}Disponible{% else %}Agotado{% endif %}
                     </p>
                 </div>
             </div>
-            
+
             <div class="product-detail-actions">
                 <a href="{{ url_for('catalogo_general') }}" class="btn btn-secondary btn-back">Volver al Catálogo</a>
                 <a href="{{ url_for('solicitud_credito', producto_interes=producto.nombre) }}" class="btn btn-primary">Solicitar Crédito para este Producto</a>
             </div>
-
         </article>
+
+        <!-- Modal para imagen ampliada -->
+        <div id="image-modal" class="image-modal">
+            <span class="image-modal-close">&times;</span>
+            <img class="image-modal-content" id="modal-image-src">
+        </div>
     {% else %}
         <h2>Producto no encontrado</h2>
         <p>El producto que estás buscando no existe o no está disponible.</p>
@@ -76,39 +92,89 @@
     {% endif %}
 </section>
 
-<!-- Estilos locales para miniaturas -->
-<style>
-    .imagenes-secundarias {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    .imagenes-secundarias img.thumbnail-image {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        border: 2px solid #ddd;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: transform 0.3s, border-color 0.3s;
-    }
-
-    .imagenes-secundarias img.thumbnail-image:hover {
-        transform: scale(1.05);
-        border-color: #007bff;
-    }
-</style>
-
-<!-- Script para cambiar imagen principal -->
+<!-- Script para manejar miniaturas y modal -->
 <script>
-    function cambiarImagenPrincipal(url) {
-        const imagen = document.getElementById('main-product-image-display');
-        if (imagen) {
-            imagen.src = url;
+    document.addEventListener('DOMContentLoaded', () => {
+        const mainImage = document.getElementById('main-product-image-display');
+        const modal = document.getElementById('image-modal');
+        const modalImg = document.getElementById('modal-image-src');
+        const closeModalBtn = modal ? modal.querySelector('.image-modal-close') : null;
+        const thumbnails = document.querySelectorAll('.thumbnail-image');
+
+        if (mainImage && modal && modalImg && closeModalBtn) {
+            mainImage.addEventListener('click', () => {
+                if (mainImage.src && !mainImage.src.includes('via.placeholder.com')) {
+                    modalImg.src = mainImage.src;
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                modalImg.src = "";
+            });
+
+            modal.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                    modalImg.src = "";
+                }
+            });
         }
-    }
+
+        if (mainImage && thumbnails.length > 0) {
+            thumbnails.forEach(thumb => {
+                thumb.addEventListener('click', function () {
+                    mainImage.src = this.dataset.fullimageUrl;
+                    thumbnails.forEach(img => img.classList.remove('active-thumbnail'));
+                    this.classList.add('active-thumbnail');
+                });
+            });
+        }
+    });
 </script>
 
+<!-- Estilos simples para el modal -->
+<style>
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        padding-top: 50px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .image-modal.active {
+        display: block;
+    }
+
+    .image-modal-content {
+        margin: auto;
+        display: block;
+        max-width: 90%;
+        max-height: 80%;
+    }
+
+    .image-modal-close {
+        position: absolute;
+        top: 30px;
+        right: 40px;
+        color: white;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .thumbnail-image.active-thumbnail {
+        border: 2px solid #333;
+    }
+</style>
 {% endblock %}
