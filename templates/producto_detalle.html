@@ -40,13 +40,15 @@
                              src="{{ producto.imagen_url or 'https://via.placeholder.com/80x80.png?text=N/A' }}" 
                              data-fullimage-url="{{ producto.imagen_url or 'https://via.placeholder.com/400x400.png?text=N/A' }}"
                              alt="Miniatura de {{ producto.nombre }}">
-
-                        {% for img in producto.imagenes_secundarias %}
-                        <img class="thumbnail-image" 
-                             src="{{ url_for('static', filename='img/uploads/' + img.url) }}" 
-                             data-fullimage-url="{{ url_for('static', filename='img/uploads/' + img.url) }}"
-                             alt="Miniatura secundaria de {{ producto.nombre }}">
-                        {% endfor %}
+                        
+                        {% if producto.imagenes_secundarias %}
+                        <div class="imagenes-secundarias">
+                            <p>Imágenes secundarias: {{ producto.imagenes_secundarias|length }}</p>
+                            {% for img in producto.imagenes_secundarias %}
+                            <img src="{{ img.url }}" alt="Imagen secundaria" width="150" style="margin: 5px;">
+                            {% endfor %}
+                        </div>
+                        {% endif %}
                     </div>
                     {% endif %}
                 </div>
