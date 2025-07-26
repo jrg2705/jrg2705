@@ -163,7 +163,7 @@ class ImagenProductoAdminView(MyModelView):
 class ProductoAdminView(MyModelView):
     def _short_description(view, context, model, name):
         if model.descripcion:
-            return model.descripcion[:100] + "..." if len(model.descripcion) > 100 else model.descripcion
+            return model.descripcion[:20] + "..." if len(model.descripcion) > 100 else model.descripcion
         return ""
 
     column_formatters = {
