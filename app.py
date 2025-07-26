@@ -146,9 +146,9 @@ class ImagenProductoAdminView(MyModelView):
         except Exception as e:
             return Markup(f"<small>Error cargando imagen: {e}</small>")
 
-    column_formatters = {
-        'url': _list_thumbnail
-    }
+    # column_formatters = {
+    #     'url': _list_thumbnail
+    # }
     # # def _list_thumbnail(view, context, model, name):
     # #     try:
     # #         if not model.url:
