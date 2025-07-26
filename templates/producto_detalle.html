@@ -39,9 +39,11 @@
                         <div class="imagenes-secundarias">
                             {% for img in imagenes %}
                                 <img class="thumbnail-image"
-                                     src="{{ img.url }}" 
-                                     alt="Imagen secundaria"
-                                     onclick="cambiarImagenPrincipal('{{ img.url }}')">
+                                    src="{{ img.url }}"
+                                    data-fullimage-url="{{ img.url }}"
+                                    alt="Imagen secundaria"
+                                    width="80"
+                                    style="margin: 5px; cursor: pointer;">
                             {% endfor %}
                         </div>
                     {% endif %}
