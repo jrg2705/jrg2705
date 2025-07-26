@@ -154,18 +154,27 @@ class ImagenProductoAdminView(MyModelView):
     # }
 
     # Esto convierte el campo 'url' en un campo de subida de archivos
-    form_extra_fields = {
-        'url': ImageUploadField('Seleccionar Imagen',
-                                base_path=app.config['UPLOAD_FOLDER'],
-                                namegen=lambda obj, file_data: f"{uuid.uuid4().hex[:10]}-{secure_filename(file_data.filename)}"
-                               )
+    # form_extra_fields = {
+    #     'url': ImageUploadField('Seleccionar Imagen',
+    #                             base_path=app.config['UPLOAD_FOLDER'],
+    #                             namegen=lambda obj, file_data: f"{uuid.uuid4().hex[:10]}-{secure_filename(file_data.filename)}"
+    #                            )
+    # }
+class ProductoAdminView(MyModelView):
+    def _short_description(view, context, model, name):
+        if model.descripcion:
+            return model.descripcion[:100] + "..." if len(model.descripcion) > 100 else model.descripcion
+        return ""
+
+    column_formatters = {
+        'descripcion': _short_description
     }
 
 admin = Admin(app, name='Jabel Muebles - Admin', template_mode='bootstrap3', base_template='admin/my_master.html', index_view=MyAdminIndexView(name='Dashboard', url='/admin'))
 
 admin.add_view(MyModelView(Categoria, db.session))
 admin.add_view(MyModelView(SubCategoria, db.session))
-admin.add_view(MyModelView(Producto, db.session))
+admin.add_view(ProductoAdminView(Producto, db.session))
 admin.add_view(ImagenProductoAdminView(ImagenProducto, db.session, name="Imagenes Secundarias"))
 admin.add_view(MyModelView(Sucursal, db.session))
 admin.add_view(UserAdminView(User, db.session))
