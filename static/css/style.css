@@ -1630,3 +1630,23 @@ textarea.form-control {
 .thumbnail-image.active-thumbnail {
     border: 2px solid #007bff;
 }
+
+.zoom-container {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    max-width: 400px;
+    border-radius: 8px;
+}
+
+.zoom-image {
+    transition: transform 0.3s ease;
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.zoom-container:hover .zoom-image {
+    transform: scale(1.15);
+    cursor: zoom-in;
+}

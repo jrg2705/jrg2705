@@ -27,11 +27,11 @@
 
         <div class="product-detail-content">
             <div class="product-detail-image-gallery">
-                <div class="main-image-container">
+                <div class="main-image-container zoom-container">
                     <img id="main-product-image-display"
+                        class="zoom-image"
                         src="{{ producto.imagen_url or 'https://via.placeholder.com/400x400.png?text=' + producto.nombre|urlencode }}"
-                        alt="Imagen principal de {{ producto.nombre }}"
-                        style="cursor: pointer; max-width: 400px; height: auto;">
+                        alt="Imagen principal de {{ producto.nombre }}">
                 </div>
 
                 {% set imagenes = producto.imagenes_secundarias.all() %}
