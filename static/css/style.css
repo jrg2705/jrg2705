@@ -1608,3 +1608,25 @@ textarea.form-control {
     color: var(--color-rojo-logo);
     text-decoration: underline;
 }
+
+/* # integracion de swiper */
+
+.swiper-container {
+    width: 100%;
+    max-width: 420px;
+    overflow: hidden;
+}
+
+.swiper-slide {
+    width: auto !important;
+    text-align: center;
+}
+.thumbnail-image {
+    border: 2px solid transparent;
+    border-radius: 4px;
+    transition: border 0.3s;
+}
+.thumbnail-image:hover,
+.thumbnail-image.active-thumbnail {
+    border: 2px solid #007bff;
+}
