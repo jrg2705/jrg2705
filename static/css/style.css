@@ -1676,8 +1676,13 @@ textarea.form-control {
 .footer-column a {
   font-size: 0.95rem;
   margin: 6px 0;
-  color: #E2601B;
+  color: #ccc;
   text-decoration: none;
+}
+
+.fas 
+{
+    color: var(--color-marron-logo);
 }
 
 .footer-logo {
