@@ -1694,13 +1694,13 @@ textarea.form-control {
 .footer-logo h3 {
   font-size: 1.2rem;
   margin: 0;
-  color: #00e09d;
+  color: #910c0c;
 }
 
 .social-icons a {
   display: inline-block;
   margin-right: 10px;
-  background: #1d2a40;
+  background: #0033CC;
   padding: 8px 10px;
   border-radius: 5px;
   color: #ccc;
@@ -1708,7 +1708,7 @@ textarea.form-control {
 }
 
 .social-icons a:hover {
-  background-color: #00e09d;
+  background-color: #F9E307;
   color: #000;
 }
 
