@@ -266,7 +266,8 @@ app.jinja_env.filters['inicial_rd'] = calcular_y_formatear_inicial
 
 @app.route('/')
 def inicio():
-    return render_template('index.html')
+    promocion = Promocion.query.filter_by(activa=True).first()
+    return render_template('index.html', promocion=promocion)
 
 @app.route('/sucursales')
 def mostrar_sucursales():
