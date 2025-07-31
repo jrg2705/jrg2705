@@ -5,7 +5,7 @@ import math
 import cloudinary
 import cloudinary.uploader
 from markupsafe import Markup
-from flask import Flask, render_template, abort, redirect, url_for, flash, request
+from flask import Flask, render_template, abort, redirect, url_for, flash, request, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from flask_admin import Admin, AdminIndexView, expose
@@ -96,6 +96,16 @@ class ImagenProducto(db.Model):
     producto_id = db.Column(db.Integer, db.ForeignKey('producto.id'), nullable=False)
     def __repr__(self): return self.url
 
+class Promocion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    titulo = db.Column(db.String(150), nullable=True)
+    imagen_url = db.Column(db.String(255), nullable=False)
+    activa = db.Column(db.Boolean, default=False)
+    link_producto = db.Column(db.String(255), nullable=True)
+
+    def __repr__(self):
+        return self.titulo or f"Promoción #{self.id}"
+
 class Sucursal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
@@ -145,6 +155,25 @@ class ImagenProductoAdminView(MyModelView):
             return Markup(f'<img src="{model.url}" width="100">')  # 👈 ENVUELTO EN Markup
         except Exception as e:
             return Markup(f"<small>Error cargando imagen: {e}</small>")
+    
+class PromocionAdminView(MyModelView):
+    form_overrides = {
+        'imagen_url': FileField
+    }
+
+    form_args = {
+        'imagen_url': {
+            'label': 'Imagen Promocional',
+            'validators': [FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Solo imágenes')]
+        }
+    }
+
+    form_columns = ('imagen_url', 'activo', 'enlace')
+
+    def on_model_change(self, form, model, is_created):
+        if form.imagen_url.data:
+            result = cloudinary.uploader.upload(form.imagen_url.data)
+            model.imagen_url = result['secure_url']
 
     # column_formatters = {
     #     'url': _list_thumbnail
@@ -196,6 +225,7 @@ admin.add_view(ImagenProductoAdminView(ImagenProducto, db.session, name="Imagene
 admin.add_view(MyModelView(Sucursal, db.session))
 admin.add_view(UserAdminView(User, db.session))
 admin.add_view(MyModelView(Rol, db.session))
+admin.add_view(PromocionAdminView(Promocion, db.session))
 
 # --- 5. FORMULARIOS ---
 class SolicitudCreditoForm(FlaskForm):
@@ -337,6 +367,16 @@ def login():
         else:
             flash('Usuario o contraseña inválidos', 'danger')
     return render_template('login.html', form=form)
+
+@app.context_processor
+def incluir_promocion():
+    promocion_activa = Promocion.query.filter_by(activa=True).first()
+    return dict(promocion_activa=promocion_activa)
+
+@app.route('/promo-vista')
+def promo_vista():
+    session['promo_vista'] = True
+    return '', 204
 
 @app.route('/logout')
 @login_required

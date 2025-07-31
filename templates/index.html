@@ -70,6 +70,46 @@
 </section>
 {# --- FIN DEL BLOQUE A AÑADIR --- #}
 
+{% if promocion_activa and not session.get('promo_vista') %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.createElement('div');
+        modal.classList.add('promo-modal');
+        modal.innerHTML = `
+            <div class="promo-content">
+                <span class="promo-close">&times;</span>
+                <a href="{{ promocion_activa.link_producto or '#' }}">
+                    <img src="{{ promocion_activa.imagen_url }}" alt="Promoción" class="promo-image">
+                </a>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        modal.querySelector('.promo-close').addEventListener('click', () => {
+            modal.remove();
+            fetch('/promo-vista');
+        });
+    });
+</script>
+<style>
+.promo-modal {
+    position: fixed; top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.7);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 9999;
+}
+.promo-content {
+    background: white; padding: 1rem; border-radius: 10px; position: relative;
+}
+.promo-content .promo-close {
+    position: absolute; top: 10px; right: 15px; font-size: 25px; cursor: pointer;
+}
+.promo-image {
+    max-width: 100%; height: auto; border-radius: 8px;
+}
+</style>
+{% endif %}
+
 {% endblock %}
 
 {% block categorias_sidebar %}
