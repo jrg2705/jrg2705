@@ -68,7 +68,7 @@
 </section>
 
 {% if promocion %}
-<!-- Modal Promoción -->
+<!-- Modal Bootstrap -->
 <div class="modal fade" id="promoModal" tabindex="-1" aria-labelledby="promoModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
@@ -87,8 +87,8 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const promoModal = new bootstrap.Modal(document.getElementById('promoModal'));
-    promoModal.show();
+    var modal = new bootstrap.Modal(document.getElementById('promoModal'));
+    modal.show();
   });
 </script>
 {% endif %}
