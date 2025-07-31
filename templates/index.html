@@ -71,33 +71,32 @@
 {# --- FIN DEL BLOQUE A AÑADIR --- #}
 
 <!-- {% if promocion_activa and not session.get('promo_vista') %} -->
-{% if promocion %}
+{% if promocion and promocion.imagen_url %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const modal = document.createElement('div');
         modal.classList.add('promo-modal');
         modal.innerHTML = `
-        <div class="modal fade" id="promoModal" tabindex="-1" aria-labelledby="promoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-            <!-- BOTÓN CERRAR -->
-            <button type="button" class="promo-close btn-close ms-auto me-2 mt-2" aria-label="Cerrar"></button>
-
-            <!-- CONTENIDO DE LA IMAGEN -->
-            <a href="{{ promocion.link_producto or '#' }}">
-                <img src="{{ promocion.imagen_url }}" class="img-fluid rounded" alt="{{ promocion.titulo }}">
-            </a>
+            <div class="promo-content">
+                <button class="promo-close" aria-label="Cerrar">&times;</button>
+                <a href="{{ promocion.link_producto or '#' }}">
+                    <img src="{{ promocion.imagen_url }}" alt="{{ promocion.titulo or 'Promoción' }}" class="promo-image">
+                </a>
             </div>
-        </div>
-        </div>
-    `;
+        `;
         document.body.appendChild(modal);
-        modal.querySelector('.promo-close').addEventListener('click', () => {
-            modal.remove();
-            fetch('/promo-vista');
-        });
+
+        const closeBtn = modal.querySelector('.promo-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                modal.remove();
+                // Si más adelante deseas controlar la sesión, descomenta esto:
+                // fetch('/promo-vista');
+            });
+        }
     });
 </script>
+
 <style>
 .promo-modal {
     position: fixed; top: 0; left: 0;
@@ -108,9 +107,12 @@
 }
 .promo-content {
     background: white; padding: 1rem; border-radius: 10px; position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
 }
-.promo-content .promo-close {
-    position: absolute; top: 10px; right: 15px; font-size: 25px; cursor: pointer;
+.promo-close {
+    position: absolute; top: 10px; right: 15px; font-size: 25px; background: none; border: none; color: #000; cursor: pointer;
 }
 .promo-image {
     max-width: 100%; height: auto; border-radius: 8px;
