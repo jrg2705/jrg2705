@@ -67,36 +67,29 @@
     </div>
 </section>
 
-{% if promocion and promocion.imagen_url %}
+{% if promocion %}
+<!-- Modal Promoción -->
+<div class="modal fade" id="promoModal" tabindex="-1" aria-labelledby="promoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <h5 class="modal-title" id="promoModalLabel">{{ promocion.titulo }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body text-center">
+        <a href="{{ promocion.link_producto or '#' }}">
+          <img src="{{ promocion.imagen_url }}" alt="Promoción" class="img-fluid rounded shadow">
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const modal = document.createElement('div');
-        modal.classList.add('promo-modal');
-        modal.innerHTML = `
-            <div class="modal fade show d-block" id="promoModal" tabindex="-1" aria-labelledby="promoModalLabel" aria-modal="true" role="dialog" style="background: rgba(0,0,0,0.7);">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content position-relative">
-                        <!-- BOTÓN CERRAR -->
-                        <button type="button" class="btn-close position-absolute end-0 m-2" id="promoClose" aria-label="Cerrar"></button>
-
-                        <!-- CONTENIDO DE LA IMAGEN -->
-                        <a href="{{ promocion.link_producto or '#' }}">
-                            <img src="{{ promocion.imagen_url }}" class="img-fluid rounded" alt="{{ promocion.titulo }}">
-                        </a>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-
-        const closeBtn = document.getElementById('promoClose');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                modal.remove();
-                // fetch('/promo-vista'); // Desactivado como pediste
-            });
-        }
-    });
+  document.addEventListener('DOMContentLoaded', function () {
+    const promoModal = new bootstrap.Modal(document.getElementById('promoModal'));
+    promoModal.show();
+  });
 </script>
 {% endif %}
 
