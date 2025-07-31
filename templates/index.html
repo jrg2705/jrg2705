@@ -77,15 +77,20 @@
         const modal = document.createElement('div');
         modal.classList.add('promo-modal');
         modal.innerHTML = `
-            <div class="promo-content">
+        <div class="modal fade" id="promoModal" tabindex="-1" aria-labelledby="promoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
             <!-- BOTÓN CERRAR -->
-                <button type="button" class="btn-close ms-auto me-2 mt-2" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-               <!-- <span class="promo-close">&times;</span> -->
-                <a href="{{ promocion_activa.link_producto or '#' }}">
-                    <img src="{{ promocion_activa.imagen_url }}" alt="Promoción" class="promo-image">
-                </a>
+            <button type="button" class="btn-close ms-auto me-2 mt-2" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+
+            <!-- CONTENIDO DE LA IMAGEN -->
+            <a href="{{ promocion.link_producto or '#' }}">
+                <img src="{{ promocion.imagen_url }}" class="img-fluid rounded" alt="{{ promocion.titulo }}">
+            </a>
             </div>
-        `;
+        </div>
+        </div>
+    `;
         document.body.appendChild(modal);
         modal.querySelector('.promo-close').addEventListener('click', () => {
             modal.remove();
