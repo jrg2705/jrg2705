@@ -70,13 +70,16 @@
 </section>
 {# --- FIN DEL BLOQUE A AÑADIR --- #}
 
-{% if promocion_activa and not session.get('promo_vista') %}
+<!-- {% if promocion_activa and not session.get('promo_vista') %} -->
+{% if promocion %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const modal = document.createElement('div');
         modal.classList.add('promo-modal');
         modal.innerHTML = `
             <div class="promo-content">
+            <!-- BOTÓN CERRAR -->
+                <button type="button" class="btn-close ms-auto me-2 mt-2" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 <span class="promo-close">&times;</span>
                 <a href="{{ promocion_activa.link_producto or '#' }}">
                     <img src="{{ promocion_activa.imagen_url }}" alt="Promoción" class="promo-image">
