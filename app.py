@@ -168,7 +168,7 @@ class PromocionAdminView(MyModelView):
         }
     }
 
-    form_columns = ('imagen_url', 'activo', 'enlace')
+    form_columns = ('imagen_url', 'activa', 'enlace')
 
     def on_model_change(self, form, model, is_created):
         if form.imagen_url.data:
