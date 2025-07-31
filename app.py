@@ -175,37 +175,7 @@ class PromocionAdminView(MyModelView):
             result = cloudinary.uploader.upload(form.imagen_url.data)
             model.imagen_url = result['secure_url']
 
-    # column_formatters = {
-    #     'url': _list_thumbnail
-    # }
-    # # def _list_thumbnail(view, context, model, name):
-    # #     try:
-    # #         if not model.url:
-    # #             return ''
-    # #         file_path = os.path.join('img/uploads', model.url)
-    # #         return f'<img src="{url_for("static", filename=file_path)}" width="100">'
-    # #     except Exception as e:
-    # #         return f"<small>Error cargando imagen: {e}</small>"
-    # def _list_thumbnail(view, context, model, name):
-    #     try:
-    #         if not model.url:
-    #             return ''
-    #         # Usa ruta absoluta relativa a /static para evitar errores con url_for en admin
-    #         return f'<img src="/static/img/uploads/{model.url}" width="100">'
-    #     except Exception as e:
-    #         return f"<small>Error cargando imagen: {e}</small>"
-
-    # column_formatters = {
-    #     'url': _list_thumbnail
-    # }
-
-    # Esto convierte el campo 'url' en un campo de subida de archivos
-    # form_extra_fields = {
-    #     'url': ImageUploadField('Seleccionar Imagen',
-    #                             base_path=app.config['UPLOAD_FOLDER'],
-    #                             namegen=lambda obj, file_data: f"{uuid.uuid4().hex[:10]}-{secure_filename(file_data.filename)}"
-    #                            )
-    # }
+   
 class ProductoAdminView(MyModelView):
     def _short_description(view, context, model, name):
         if model.descripcion:
