@@ -344,10 +344,10 @@ def incluir_promocion():
     promocion_activa = Promocion.query.filter_by(activa=True).first()
     return dict(promocion_activa=promocion_activa)
 
-@app.route('/promo-vista')
-def promo_vista():
-    session['promo_vista'] = True
-    return '', 204
+# @app.route('/promo-vista')
+# def promo_vista():
+#     session['promo_vista'] = True
+#     return '', 204
 
 @app.route('/logout')
 @login_required
