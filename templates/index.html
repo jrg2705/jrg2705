@@ -99,15 +99,20 @@
     justify-content: center;
     z-index: 9999;
 }
+
 .promo-content {
     background: white;
-    padding: 1rem;
+    padding: 0.5rem;
     border-radius: 10px;
     position: relative;
-    max-width: 90%;
-    max-height: 90%;
-    overflow: auto;
+    max-width: 95vw;
+    max-height: 95vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Evita el scroll interno */
 }
+
 .promo-close {
     position: absolute;
     top: 10px;
@@ -117,10 +122,13 @@
     border: none;
     color: #000;
     cursor: pointer;
+    z-index: 10;
 }
+
 .promo-image {
     max-width: 100%;
-    height: auto;
+    max-height: 100%;
+    object-fit: contain; /* Esto hace que la imagen se ajuste bien sin deformarse */
     border-radius: 8px;
     display: block;
 }
